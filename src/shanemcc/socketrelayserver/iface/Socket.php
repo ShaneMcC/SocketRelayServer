@@ -95,6 +95,11 @@
 		public abstract function listen();
 
 		/**
+		 * Called to start the socket as a client socket.
+		 */
+		public abstract function connect();
+
+		/**
 		 * Close the server and all open connections.
 		 *
 		 * @param String $message Reason for closing.

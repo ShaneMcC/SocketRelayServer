@@ -10,6 +10,9 @@
 		/** @var SocketConnection Our client */
 		private $conn;
 
+		/** @var String Our socketID */
+		private $socketID = '';
+
 		/**
 		 * Create a new SocketHandler
 		 *
@@ -17,6 +20,7 @@
 		 */
 		public function __construct(SocketConnection $conn) {
 			$this->conn = $conn;
+			$this->socketID = $this->getSocketConnection()->getRemoteAddress();
 		}
 
 		/**
@@ -31,7 +35,7 @@
 		/**
 		 * Called when the socket first connects.
 		 */
-		public abstract function onConnect();
+		public function onConnect() { }
 
 		/**
 		 * Called when a new connection is refused before closing it.
@@ -43,12 +47,12 @@
 		 *
 		 * @var String $data Data from the socket.
 		 */
-		public abstract function onData(String $data);
+		public function onData(String $data) { }
 
 		/**
 		 * Called when the socket is closed.
 		 */
-		public abstract function onClose();
+		public function onClose() { }
 
 		/**
 		 * Called when we are closing a socket. .
@@ -73,6 +77,6 @@
 		 * @return String SocketID.
 		 */
 		public function getSocketID() {
-			return $this->getSocketConnection()->getRemoteAddress();
+			return $this->socketID;
 		}
 	}
