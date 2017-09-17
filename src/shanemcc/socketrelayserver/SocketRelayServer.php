@@ -4,6 +4,7 @@
 	use shanemcc\socketrelayserver\impl\ReactSocket\SocketServer as React_Socket_SocketServer;
 	use shanemcc\socketrelayserver\impl\SocketRelay\SocketHandlerFactory as SocketRelay_SocketHandlerFactory;
 	use shanemcc\socketrelayserver\iface\ReportHandler;
+	use shanemcc\socketrelayserver\iface\SocketServer as BaseSocketServer;
 
 	/**
 	 * SocketRelayServer
@@ -58,7 +59,7 @@
 		 *
 		 * @return SocketServer our SocketServer
 		 */
-		public function getSocketServer(): SocketServer {
+		public function getSocketServer(): BaseSocketServer {
 			return $this->server;
 		}
 
