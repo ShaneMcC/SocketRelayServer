@@ -30,8 +30,8 @@
 			$this->addHandler('Q', 'Close the connection', [$this, 'processMessage_Q']);
 			$this->addHandler('LS', 'List known message types', [$this, 'processMessage_LS']);
 
-			$this->addHandler('CM', 'Send a message to a channel', [$this, 'processMessage_CM']);
-			$this->addHandler('PM', 'Send a message to a user', [$this, 'processMessage_PM']);
+			$this->addHandler('CM', 'Send a message to a channel', [$this, 'processMessage_ReportHandler'], ['CM']);
+			$this->addHandler('PM', 'Send a message to a user', [$this, 'processMessage_ReportHandler'], ['PM']);
 		}
 
 		/**
@@ -41,12 +41,11 @@
 		 * @param String $description Description of handler
 		 * @param Callable $callable Callable to call to handle message.
 		 */
-		protected function addHandler(String $messageType, String $description, Callable $callable) {
+		protected function addHandler(String $messageType, String $description, Callable $callable, ?Array $extraParams = null) {
 			$this->handlers[strtoupper($messageType)] = ['description' => $description, 'callable' => $callable];
-
-			// if ($this->server->isVerbose()) {
-			// 	echo 'Registered handler for: ', strtoupper($messageType), ' => ', $description, "\n";
-			// }
+			if ($extraParams != NULL) {
+				$this->handlers[strtoupper($messageType)]['extra'] = $extraParams;
+			}
 		}
 
 		/**
@@ -116,7 +115,8 @@
 						$messageParams = isset($parts[3]) ? $parts[3] : '';
 
 						$handler = $this->getHandler($messageType);
-						call_user_func($handler['callable'], $number, $key, $messageParams);
+						$params = array_merge([$number, $key, $messageParams], isset($handler['extra']) ? $handler['extra'] : []);
+						call_user_func_array($handler['callable'], $params);
 					} else {
 						$this->invalidHandler($number, $key, '');
 					}
@@ -202,6 +202,23 @@
 				} else if (in_array(strtoupper($messageType), ["Q", "LS"])) {
 					return TRUE;
 				}
+			}
+
+			return FALSE;
+		}
+
+		/**
+		 * Check if the given target is valid for the given key and message type.
+		 *
+		 * @param String $key Key to check.
+		 * @param String $messageType MessageType to check.
+		 * @param String $target Target to check.
+		 * @return bool True iif key is valid for the given message type + target
+		 */
+		public function isValidTarget(String $key, String $messageType, String $target): bool {
+			if ($this->canAccess($key, $messageType)) {
+				// TODO: Target limiting.
+				return TRUE;
 			}
 
 			return FALSE;
@@ -324,40 +341,28 @@
 		}
 
 		/**
-		 * Process a CM message.
-		 *
-		 * @param String $number 'Number' from client
-		 * @param String $key Key that was given.
-		 * @param String $messageParams Params that were given
-		 */
-		public function processMessage_CM(String $number, String $key, String $messageParams) {
-			$this->processMessage_ReportHandler('CM', $number, $key, $messageParams);
-		}
-
-		/**
-		 * Process a PM message.
-		 *
-		 * @param String $number 'Number' from client
-		 * @param String $key Key that was given.
-		 * @param String $messageParams Params that were given
-		 */
-		public function processMessage_PM(String $number, String $key, String $messageParams) {
-			$this->processMessage_ReportHandler('CM', $number, $key, $messageParams);
-		}
-
-		/**
 		 * Pass a message on to the ReportHandler
 		 *
-		 * @param String $messageType Message type.
 		 * @param String $number 'Number' from client
 		 * @param String $key Key that was given.
 		 * @param String $messageParams Params that were given
+		 * @param String $messageType Message type.
 		 */
-		public function processMessage_ReportHandler(String $messageType, String $number, String $key, String $messageParams) {
-			$reportHandler = $this->server->getReportHandler();
+		public function processMessage_ReportHandler(String $number, String $key, String $messageParams, String $messageType) {
+			$bits = explode(' ', $messageParams, 2);
+			$target = $bits[0];
+			$message = isset($bits[1]) ? $bits[1] : '';
 
-			if ($reportHandler instanceof ReportHandler) {
-				$reportHandler->handle($this, $messageType, $number, $key, $messageParams);
+			if (empty($target) || empty($message) || !$this->isValidTarget($key, $messageType, $target)) {
+				$this->invalidHandler($number, $key, $messageParams);
+			} else {
+				$reportHandler = $this->server->getReportHandler();
+
+				if ($reportHandler instanceof ReportHandler) {
+					$reportHandler->handle($this, $messageType, $number, $key, $messageParams);
+				} else {
+					$this->invalidHandler($number, $key, $messageParams);
+				}
 			}
 		}
 	}
