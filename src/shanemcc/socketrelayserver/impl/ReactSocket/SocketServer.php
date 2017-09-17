@@ -23,9 +23,13 @@
 		/** @var Array of open handlers. */
 		private $handlers;
 
+		/** @var bool Are we accepting new connections? */
+		private $allowNew = false;
+
 		/** @inheritDoc */
 		public function listen() {
 			if ($this->loop !== null) { throw new Exception('Already Listening.'); }
+			$this->allowNew = true;
 
  			$this->handlers = new \SplObjectStorage();
 
@@ -36,6 +40,12 @@
 				$clientConnection = new ClientConnection($conn);
 				$handler = $this->getSocketHandlerFactory()->get($clientConnection);
 				$this->handlers[$handler] = ['time' => time(), 'conn' => $clientConnection];
+
+				if (!$this->allowNew) {
+					$handler->sendResponse('--', 'Sck', 'Closing Connection.');
+					$clientConnection->close();
+					return;
+				}
 
 				try { $handler->onConnect(); } catch (Throwable $ex) { $this->onError('connect', $ex); }
 
@@ -101,6 +111,7 @@
 		/** @inheritDoc */
 		public function close(String $message = 'Server closing.') {
 			// Stop accepting any new sockets.
+			$this->allowNew = false;
 			$this->server->pause();
 
 			// Close sockets.
