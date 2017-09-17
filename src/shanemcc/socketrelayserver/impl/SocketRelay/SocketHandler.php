@@ -6,8 +6,17 @@
 	use shanemcc\socketrelayserver\SocketRelayServer;
 	use shanemcc\socketrelayserver\iface\ReportHandler;
 
+	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\MessageHandler;
+	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\Q;
+	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\CM;
+	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\A;
+	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\PM;
+	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\LS;
+
+	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\HELP;
+
 	/**
-	 * EchoTest SocketHandler.
+	 * SocketRelay SocketHandler.
 	 */
 	class SocketHandler extends BaseSocketHandler {
 		/** @var SocketRelayServer Server that owns us. */
@@ -26,26 +35,24 @@
 			parent::__construct($conn);
 			$this->server = $server;
 
-			$this->addHandler('A', 'Administration commands', [$this, 'processMessage_A']);
-			$this->addHandler('Q', 'Close the connection', [$this, 'processMessage_Q']);
-			$this->addHandler('LS', 'List known message types', [$this, 'processMessage_LS']);
-
-			$this->addHandler('CM', 'Send a message to a channel', [$this, 'processMessage_ReportHandler'], ['CM']);
-			$this->addHandler('PM', 'Send a message to a user', [$this, 'processMessage_ReportHandler'], ['PM']);
+			$this->addHandler(new A($this));
+			$this->addHandler(new Q($this));
+			$this->addHandler(new LS($this));
+			$this->addHandler(new CM($this));
+			$this->addHandler(new PM($this));
+			$this->addHandler(new HELP($this));
 		}
 
 		/**
 		 * Add a new handler.
 		 *
-		 * @param String $messageType Message type to handle
-		 * @param String $description Description of handler
-		 * @param Callable $callable Callable to call to handle message.
+		 * @param MessageHandler $handler Handler.
 		 */
-		protected function addHandler(String $messageType, String $description, Callable $callable, ?Array $extraParams = null) {
-			$this->handlers[strtoupper($messageType)] = ['description' => $description, 'callable' => $callable];
-			if ($extraParams != NULL) {
-				$this->handlers[strtoupper($messageType)]['extra'] = $extraParams;
-			}
+		public function addHandler(MessageHandler $handler) {
+			$messageType = $handler->getMessageType();
+			$description = $handler->getDescription();
+
+			$this->handlers[strtoupper($messageType)] = ['description' => $description, 'callable' => [$handler, 'handleMessage']];
 		}
 
 		/**
@@ -54,7 +61,7 @@
 		 * @param $messageType Message type to handle.
 		 * @return bool True iif we have a handler.
 		 */
-		protected function hasHandler(String $messageType): bool {
+		public function hasHandler(String $messageType): bool {
 			return array_key_exists(strtoupper($messageType), $this->handlers);
 		}
 
@@ -64,14 +71,36 @@
 		 * If we don't have a handler then we will return the invalidHandler
 		 * callable.
 		 *
-		 * @param $messageType Message type to handle.
+		 * @param String $messageType Message type to handle.
 		 * @return Array with 'callable' key containing the function to call.
 		 */
-		protected function getHandler(String $messageType): Array {
+		public function getHandler(String $messageType): Array {
 			if ($this->hasHandler($messageType)) {
 				return $this->handlers[strtoupper($messageType)];
 			} else {
 				return ['description' => 'Invalid Message Type', 'callable' => [$this, 'invalidHandler']];
+			}
+		}
+
+		/**
+		 * Run the handler for the given message type.
+		 *
+		 * If we don't have a handler then we will run the invalidHandler
+		 * callable.
+		 *
+		 * @param String $messageType Message type to handle.
+		 * @param String $number 'Number' from client
+		 * @param String $key Key that was given.
+		 * @param String $messageParams Params that were given
+		 */
+		public function runHandler(String $messageType, String $number, String $key, String $messageParams) {
+			if ($this->hasHandler($messageType)) {
+				$handler = $this->getHandler($messageType);
+				if (!call_user_func($handler['callable'], $number, $key, $messageParams)) {
+					$this->invalidHandler($number, $key, '');
+				}
+			} else {
+				$this->invalidHandler($number, $key, '');
 			}
 		}
 
@@ -81,8 +110,17 @@
 		 *
 		 * @return Array Array of handlers.
 		 */
-		protected function getHandlers(): Array {
+		public function getHandlers(): Array {
 			return $this->handlers;
+		}
+
+		/**
+		 * Get our server.
+		 *
+		 * @return SocketRelayServer Server that owns us.
+		 */
+		public function getServer(): SocketRelayServer {
+			return $this->server;
 		}
 
 		/** @inheritDoc */
@@ -101,7 +139,7 @@
 
 			if (count($parts) < 3) {
 				if ($data == '??') {
-					$this->sendHelp();
+					$this->runHandler('??', '--', '--', '');
 					$this->closeConnection();
 				} else {
 					$this->sendResponse($number, 'Err', 'Protocol Error');
@@ -114,9 +152,7 @@
 					if ($this->canAccess($key, $messageType)) {
 						$messageParams = isset($parts[3]) ? $parts[3] : '';
 
-						$handler = $this->getHandler($messageType);
-						$params = array_merge([$number, $key, $messageParams], isset($handler['extra']) ? $handler['extra'] : []);
-						call_user_func_array($handler['callable'], $params);
+						$this->runHandler($messageType, $number, $key, $messageParams);
 					} else {
 						$this->invalidHandler($number, $key, '');
 					}
@@ -225,61 +261,6 @@
 		}
 
 		/**
-		 * Send the help message to the socket.
-		 */
-		public function sendHelp() {
-			$this->sendResponse('--', '--', '--------------------');
-			$this->sendResponse('--', '--', 'SocketRelay by Dataforce');
-			$this->sendResponse('--', '--', '--------------------');
-			$this->sendResponse('--', '--', 'This service is setup to allow for special commands to be issued over this socket connection');
-			$this->sendResponse('--', '--', 'The commands follow a special syntax:');
-			$this->sendResponse('--', '--', '<ID> <KEY> <COMMAND> [Params]');
-			$this->sendResponse('--', '--', '');
-			$this->sendResponse('--', '--', '<ID>       The message ID, this can be anything, and is used when replying to commands');
-			$this->sendResponse('--', '--', '           to enable responses to be matched to queries');
-			$this->sendResponse('--', '--', '<KEY>      In order to send a command, you must first have a KEY. This is to prevent');
-			$this->sendResponse('--', '--', '           abuse of the service, and to control which commands are usable, and when.');
-			$this->sendResponse('--', '--', '<COMMAND>  The command to send. Commands which you have access to will be listed when');
-			$this->sendResponse('--', '--', '           the \'LS\' command is issued. Commands are case sensitive.');
-			$this->sendResponse('--', '--', '[Params]   Params are optional, and may or may not be needed by a specific command.');
-			$this->sendResponse('--', '--', '');
-			$this->sendResponse('--', '--', 'An example LS command would be:');
-			$this->sendResponse('--', '--', '00 AAS8D3D LS');
-			$this->sendResponse('--', '--', '');
-			$this->sendResponse('--', '--', '----------');
-			$this->sendResponse('--', '--', '');
-			$this->sendResponse('--', '--', 'Responses to command also follow a special syntax:');
-			$this->sendResponse('--', '--', '[<ID> <CODE>] <REPLY>');
-			$this->sendResponse('--', '--', '');
-			$this->sendResponse('--', '--', '<ID>       This the same as the ID given when issuing the command. This may also be \'--\'');
-			$this->sendResponse('--', '--', '           for unrequested responses, or special responses such as this.');
-			$this->sendResponse('--', '--', '<CODE>     This is a special code related to the response, such as \'ERR\' for an error.');
-			$this->sendResponse('--', '--', '           Different commands use different response codes.');
-			$this->sendResponse('--', '--', '<REPLY>    This is the result of the command. It is a freeform text response.');
-			$this->sendResponse('--', '--', '           Different commands may or may not have further syntax in their responses.');
-			$this->sendResponse('--', '--', '');
-			$this->sendResponse('--', '--', 'An example LS response to the above command would be:');
-			$this->sendResponse('--', '--', '[00 LS] # Name -- Desc');
-			$this->sendResponse('--', '--', '[00 LS] Q -- Close the connection');
-			$this->sendResponse('--', '--', '[00 LS] LS -- List known message types');
-			$this->sendResponse('--', '--', '');
-			$this->sendResponse('--', '--', 'A response with a key and a code of \'--\' is a general notice, or special message.');
-			$this->sendResponse('--', '--', '');
-			$this->sendResponse('--', '--', '----------');
-			$this->sendResponse('--', '--', '');
-			$this->sendResponse('--', '--', 'The socket will stay open until:');
-			$this->sendResponse('--', '--', '    1) It is closed by the client');
-			$this->sendResponse('--', '--', '    2) the \'Q\' command is used');
-			$this->sendResponse('--', '--', '    3) the <ID> \'--\' is used');
-			$this->sendResponse('--', '--', '    4) The connection is left idle for too long');
-			$this->sendResponse('--', '--', '    5) An invalid key is used');
-			$this->sendResponse('--', '--', '');
-			$this->sendResponse('--', '--', '--------------------');
-			$this->sendResponse('--', '--', 'If you do not have a key, then you need to contact the bot owner to get one.');
-			$this->sendResponse('--', '--', '--------------------');
-		}
-
-		/**
 		 * Repond to the socket about an invalid handler.
 		 *
 		 * @param String $number 'Number' from client
@@ -287,82 +268,6 @@
 		 * @param String $messageParams Params that were given
 		 */
 		public function invalidHandler(String $number, String $key, String $messageParams) {
-			$this->sendResponse($number, 'Err', 'Access denied, or Invalid Handler');
-		}
-
-		/**
-		 * Process an LS message.
-		 *
-		 * @param String $number 'Number' from client
-		 * @param String $key Key that was given.
-		 * @param String $messageParams Params that were given
-		 */
-		public function processMessage_LS(String $number, String $key, String $messageParams) {
-			$this->sendResponse($number, 'LS', '# Name -- Desc');
-			foreach ($this->getHandlers() as $messageType => $handler) {
-				if ($this->canAccess($key, $messageType)) {
-					$this->sendResponse($number, 'LS', $messageType . ' -- ' . $handler['description']);
-				}
-			}
-		}
-
-		/**
-		 * Process a Q message.
-		 *
-		 * @param String $number 'Number' from client
-		 * @param String $key Key that was given.
-		 * @param String $messageParams Params that were given
-		 */
-		public function processMessage_Q(String $number, String $key, String $messageParams) {
-			if ($number == '--') { return; }
-
-			$this->sendResponse($number, 'Sck', 'Closing Connection');
-			$this->getClientConnection()->close();
-		}
-
-		/**
-		 * Process an A message.
-		 *
-		 * @param String $number 'Number' from client
-		 * @param String $key Key that was given.
-		 * @param String $messageParams Params that were given
-		 */
-		public function processMessage_A(String $number, String $key, String $messageParams) {
-			$messageBits = explode(' ', $messageParams);
-
-			$messageBits[0] = strtoupper($messageBits[0]);
-
-			if ($messageBits[0] == 'RAW') {
-				$this->processMessage_ReportHandler('A', $number, $key, implode(' ', $messageBits));
-			} else if ($messageBits[0] == 'KILL') {
-				$reason = isset($messageBits[1]) ? $messageBits[1] : 'Server closing.';
-				$this->server->getSocketServer()->close($reason);
-			}
-		}
-
-		/**
-		 * Pass a message on to the ReportHandler
-		 *
-		 * @param String $number 'Number' from client
-		 * @param String $key Key that was given.
-		 * @param String $messageParams Params that were given
-		 * @param String $messageType Message type.
-		 */
-		public function processMessage_ReportHandler(String $number, String $key, String $messageParams, String $messageType) {
-			$bits = explode(' ', $messageParams, 2);
-			$target = $bits[0];
-			$message = isset($bits[1]) ? $bits[1] : '';
-
-			if (empty($target) || empty($message) || !$this->isValidTarget($key, $messageType, $target)) {
-				$this->invalidHandler($number, $key, $messageParams);
-			} else {
-				$reportHandler = $this->server->getReportHandler();
-
-				if ($reportHandler instanceof ReportHandler) {
-					$reportHandler->handle($this, $messageType, $number, $key, $messageParams);
-				} else {
-					$this->invalidHandler($number, $key, $messageParams);
-				}
-			}
+			$this->sendResponse($number, 'Err', 'Access denied, Invalid Handler or Other Error');
 		}
 	}

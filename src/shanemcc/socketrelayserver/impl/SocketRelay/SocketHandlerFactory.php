@@ -7,7 +7,7 @@
 	use shanemcc\socketrelayserver\SocketRelayServer;
 
 	/**
-	 * Factory to create EchoTest SocketHandlers.
+	 * Factory to create SocketRelay SocketHandlers.
 	 */
 	class SocketHandlerFactory implements BaseSocketHandlerFactory {
 		/** @var SocketRelayServer Server that owns us. */
