@@ -7,12 +7,6 @@
 	use shanemcc\socketrelayserver\iface\ReportHandler;
 
 	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\MessageHandler;
-	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\Q;
-	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\CM;
-	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\A;
-	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\PM;
-	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\LS;
-
 	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\HELP;
 
 	/**
@@ -23,7 +17,7 @@
 		private $server;
 
 		/** @var Array Array of handlers for message types. */
-		private $handlers = [];
+		private static $handlers = [];
 
 		/**
 		 * Create a new SocketHandler
@@ -34,13 +28,6 @@
 		public function __construct(ClientConnection $conn, SocketRelayServer $server) {
 			parent::__construct($conn);
 			$this->server = $server;
-
-			$this->addHandler(new A($this));
-			$this->addHandler(new Q($this));
-			$this->addHandler(new LS($this));
-			$this->addHandler(new CM($this));
-			$this->addHandler(new PM($this));
-			$this->addHandler(new HELP($this));
 		}
 
 		/**
@@ -48,11 +35,11 @@
 		 *
 		 * @param MessageHandler $handler Handler.
 		 */
-		public function addHandler(MessageHandler $handler) {
+		public static function addMessageHandler(MessageHandler $handler) {
 			$messageType = $handler->getMessageType();
 			$description = $handler->getDescription();
 
-			$this->handlers[strtoupper($messageType)] = ['description' => $description, 'callable' => [$handler, 'handleMessage']];
+			self::$handlers[strtoupper($messageType)] = ['description' => $description, 'callable' => [$handler, 'handleMessage']];
 		}
 
 		/**
@@ -61,8 +48,8 @@
 		 * @param $messageType Message type to handle.
 		 * @return bool True iif we have a handler.
 		 */
-		public function hasHandler(String $messageType): bool {
-			return array_key_exists(strtoupper($messageType), $this->handlers);
+		public static function hasMessageHandler(String $messageType): bool {
+			return array_key_exists(strtoupper($messageType), self::$handlers);
 		}
 
 		/**
@@ -74,12 +61,21 @@
 		 * @param String $messageType Message type to handle.
 		 * @return Array with 'callable' key containing the function to call.
 		 */
-		public function getHandler(String $messageType): Array {
-			if ($this->hasHandler($messageType)) {
-				return $this->handlers[strtoupper($messageType)];
+		public static function getMessageHandler(String $messageType): Array {
+			if (self::hasMessageHandler($messageType)) {
+				return self::$handlers[strtoupper($messageType)];
 			} else {
 				return ['description' => 'Invalid Message Type', 'callable' => [$this, 'invalidHandler']];
 			}
+		}
+
+		/**
+		 * Get all our handlers.
+		 *
+		 * @return Array Array of handlers.
+		 */
+		public static function getMessageHandlers(): Array {
+			return self::$handlers;
 		}
 
 		/**
@@ -93,10 +89,10 @@
 		 * @param String $key Key that was given.
 		 * @param String $messageParams Params that were given
 		 */
-		public function runHandler(String $messageType, String $number, String $key, String $messageParams) {
-			if ($this->hasHandler($messageType)) {
-				$handler = $this->getHandler($messageType);
-				if (!call_user_func($handler['callable'], $number, $key, $messageParams)) {
+		public function runMessageHandler(String $messageType, String $number, String $key, String $messageParams) {
+			if (self::hasMessageHandler($messageType)) {
+				$handler = self::getMessageHandler($messageType);
+				if (!call_user_func($handler['callable'], $this, $number, $key, $messageParams)) {
 					$this->invalidHandler($number, $key, '');
 				}
 			} else {
@@ -104,14 +100,15 @@
 			}
 		}
 
-
 		/**
-		 * Get all our handlers.
+		 * Repond to the socket about an invalid handler.
 		 *
-		 * @return Array Array of handlers.
+		 * @param String $number 'Number' from client
+		 * @param String $key Key that was given.
+		 * @param String $messageParams Params that were given
 		 */
-		public function getHandlers(): Array {
-			return $this->handlers;
+		public function invalidHandler(String $number, String $key, String $messageParams) {
+			$this->sendResponse($number, 'Err', 'Access denied, Invalid Handler or Other Error');
 		}
 
 		/**
@@ -139,7 +136,7 @@
 
 			if (count($parts) < 3) {
 				if ($data == '??') {
-					$this->runHandler('??', '--', '--', '');
+					$this->runMessageHandler('??', '--', '--', '');
 					$this->closeConnection();
 				} else {
 					$this->sendResponse($number, 'Err', 'Protocol Error');
@@ -152,7 +149,7 @@
 					if ($this->canAccess($key, $messageType)) {
 						$messageParams = isset($parts[3]) ? $parts[3] : '';
 
-						$this->runHandler($messageType, $number, $key, $messageParams);
+						$this->runMessageHandler($messageType, $number, $key, $messageParams);
 					} else {
 						$this->invalidHandler($number, $key, '');
 					}
@@ -258,16 +255,5 @@
 			}
 
 			return FALSE;
-		}
-
-		/**
-		 * Repond to the socket about an invalid handler.
-		 *
-		 * @param String $number 'Number' from client
-		 * @param String $key Key that was given.
-		 * @param String $messageParams Params that were given
-		 */
-		public function invalidHandler(String $number, String $key, String $messageParams) {
-			$this->sendResponse($number, 'Err', 'Access denied, Invalid Handler or Other Error');
 		}
 	}

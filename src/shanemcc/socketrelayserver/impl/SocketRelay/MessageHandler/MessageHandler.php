@@ -4,26 +4,10 @@
 	use shanemcc\socketrelayserver\impl\SocketRelay\SocketHandler;
 
 	abstract class MessageHandler {
-		/** @var SocketHandler Our socker handler. */
-		private $handler;
-
 		/**
 		 * Create a new Message Handler.
-		 *
-		 * @param SocketHandler $handler Our socket handler.
 		 */
-		public function __construct(SocketHandler $handler) {
-			$this->handler = $handler;
-		}
-
-		/**
-		 * Get our socket handler.
-		 *
-		 * @return SockerHandler Our socket handler.
-		 */
-		public function getSocketHandler(): SocketHandler {
-			return $this->handler;
-		}
+		public function __construct() { }
 
 		/**
 		 * Get the MessageType of this handler.
@@ -42,12 +26,13 @@
 		/**
 		 * Handle this message.
 		 *
+		 * @param SocketHandler $handler SocketHandler that we are handling for.
 		 * @param String $number 'Number' from client
 		 * @param String $key Key that was given.
 		 * @param String $messageParams Params that were given
 		 * @return bool True if message was handled or false if we should fire
 		 *              the invalid message handler.
 		 */
-		public abstract function handleMessage(String $number, String $key, String $messageParams): bool;
+		public abstract function handleMessage(SocketHandler $handler, String $number, String $key, String $messageParams): bool;
 
 	}

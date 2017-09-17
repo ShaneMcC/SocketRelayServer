@@ -3,8 +3,17 @@
 
 	use shanemcc\socketrelayserver\impl\ReactSocket\SocketServer as React_Socket_SocketServer;
 	use shanemcc\socketrelayserver\impl\SocketRelay\SocketHandlerFactory as SocketRelay_SocketHandlerFactory;
+	use shanemcc\socketrelayserver\impl\SocketRelay\SocketHandler as SocketRelay_SocketHandler;
 	use shanemcc\socketrelayserver\iface\ReportHandler;
 	use shanemcc\socketrelayserver\iface\SocketServer as BaseSocketServer;
+
+	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\MessageHandler;
+	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\Q;
+	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\CM;
+	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\A;
+	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\PM;
+	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\LS;
+	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\HELP;
 
 	/**
 	 * SocketRelayServer
@@ -51,6 +60,13 @@
 		private function setSocketServer() {
 			$this->server = new React_Socket_SocketServer($this->host, $this->port, $this->timeout);
 			$this->server->setSocketHandlerFactory(new SocketRelay_SocketHandlerFactory($this));
+
+			SocketRelay_SocketHandler::addMessageHandler(new A());
+			SocketRelay_SocketHandler::addMessageHandler(new Q());
+			SocketRelay_SocketHandler::addMessageHandler(new LS());
+			SocketRelay_SocketHandler::addMessageHandler(new CM());
+			SocketRelay_SocketHandler::addMessageHandler(new PM());
+			SocketRelay_SocketHandler::addMessageHandler(new HELP());
 		}
 
 

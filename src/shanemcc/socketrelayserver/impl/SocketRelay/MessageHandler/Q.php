@@ -1,6 +1,7 @@
 <?php
 
 	namespace shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler;
+	use shanemcc\socketrelayserver\impl\SocketRelay\SocketHandler;
 
 	class Q extends MessageHandler {
 		/** @inheritDoc. */
@@ -14,11 +15,11 @@
 		}
 
 		/** @inheritDoc */
-		public function handleMessage(String $number, String $key, String $messageParams): bool {
+		public function handleMessage(SocketHandler $handler, String $number, String $key, String $messageParams): bool {
 			// Don't duplicate the close message if the user sends "-- <KEY> Q"
 			if ($number != '--') {
-				$this->getSocketHandler()->sendResponse($number, 'Sck', 'Closing Connection');
-				$this->getSocketHandler()->getClientConnection()->close();
+				$handler->sendResponse($number, 'Sck', 'Closing Connection');
+				$handler->getClientConnection()->close();
 			}
 
 			return true;

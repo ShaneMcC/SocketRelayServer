@@ -2,6 +2,7 @@
 
 	namespace shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler;
 	use shanemcc\socketrelayserver\iface\ReportHandler;
+	use shanemcc\socketrelayserver\impl\SocketRelay\SocketHandler;
 
 	class A extends MessageHandler {
 		/** @inheritDoc. */
@@ -15,21 +16,21 @@
 		}
 
 		/** @inheritDoc */
-		public function handleMessage(String $number, String $key, String $messageParams): bool {
+		public function handleMessage(SocketHandler $handler, String $number, String $key, String $messageParams): bool {
 			$messageBits = explode(' ', $messageParams);
 
 			$messageBits[0] = strtoupper($messageBits[0]);
 
 			if ($messageBits[0] == 'RAW') {
-				$reportHandler = $this->getSocketHandler()->getServer()->getReportHandler();
+				$reportHandler = $handler->getServer()->getReportHandler();
 
 				if ($reportHandler instanceof ReportHandler) {
-					$reportHandler->handle($this->getSocketHandler(), 'A', $number, $key, implode(' ', $messageBits));
+					$reportHandler->handle($handler, 'A', $number, $key, implode(' ', $messageBits));
 					return true;
 				}
 			} else if ($messageBits[0] == 'KILL') {
 				$reason = isset($messageBits[1]) ? $messageBits[1] : 'Server closing.';
-				$this->getSocketHandler()->getServer()->getSocketServer()->close($reason);
+				$handler->getServer()->getSocketServer()->close($reason);
 				return true;
 			}
 
