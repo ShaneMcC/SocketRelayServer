@@ -75,7 +75,7 @@
 		 *
 		 * @param Bool $verbose New value for verbose mode.
 		 */
-		public function setVerbose(Array $verbose) {
+		public function setVerbose(bool $verbose) {
 			$this->verbose = $verbose;
 		}
 
