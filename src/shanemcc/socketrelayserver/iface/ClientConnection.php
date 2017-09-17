@@ -30,14 +30,14 @@
 		 *
 		 * @return String Remote socket address.
 		 */
-		public abstract function getRemoteAddress(): String;
+		public abstract function getRemoteAddress(): ?String;
 
 		/**
 		 * Get local address.
 		 *
 		 * @return String Local socket address.
 		 */
-		public abstract function getLocalAddress(): String;
+		public abstract function getLocalAddress(): ?String;
 
 		/**
 		 * Close the socket.
