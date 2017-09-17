@@ -43,6 +43,10 @@
 		 */
 		protected function addHandler(String $messageType, String $description, Callable $callable) {
 			$this->handlers[strtoupper($messageType)] = ['description' => $description, 'callable' => $callable];
+
+			if ($this->server->isVerbose()) {
+				echo 'Registered handler for: ', strtoupper($messageType), ' => ', $description, "\n";
+			}
 		}
 
 		/**
@@ -85,11 +89,13 @@
 		/** @inheritDoc */
 		public function onConnect() {
 			$this->sendResponse("--", "--", "Welcome, you are connected to SocketRelayServer - Use '??' for information about this service.");
+			if ($this->server->isVerbose()) { echo '[', $this->getSocketID(), '] Client Connected. ', "\n"; }
 		}
 
 		/** @inheritDoc */
 		public function onData(String $data) {
 			if (empty($data)) { return; }
+			if ($this->server->isVerbose()) { echo '[', $this->getSocketID(), '] Data: ', $data, "\n"; }
 
 			$parts = explode(' ', $data, 4);
 			$number = $parts[0];
@@ -127,7 +133,7 @@
 
 		/** @inheritDoc */
 		public function onClose() {
-
+			if ($this->server->isVerbose()) { echo '[', $this->getSocketID(), '] Socket Closed. ', "\n"; }
 		}
 
 		/** @inheritDoc */
@@ -154,7 +160,9 @@
 		 * @param String $message Message to send.
 		 */
 		public function sendResponse(String $number, String $type, String $message) {
-			$this->getClientConnection()->writeln('[', $number, ' ', $type, '] ', $message);
+			$line = sprintf('[%s %s] %s', $number, $type, $message);
+			$this->getClientConnection()->writeln($line);
+			if ($this->server->isVerbose()) { echo '[', $this->getSocketID(), '] Response: ', $line, "\n"; }
 		}
 
 		/**

@@ -18,6 +18,9 @@
 		/** @var int Timeout for inactive connectons. */
 		private $timeout;
 
+		/** @var bool Are we running in verbose mode? */
+		private $verbose;
+
 		/** @var iface\SocketServer SocketServer we are using. */
 		private $server;
 
@@ -41,17 +44,48 @@
 			$this->setSocketServer();
 		}
 
+		/**
+		 * Set up the socket server.
+		 */
 		private function setSocketServer() {
 			$this->server = new React_Socket_SocketServer($this->host, $this->port, $this->timeout);
 			$this->server->setSocketHandlerFactory(new SocketRelay_SocketHandlerFactory($this));
 		}
 
-		public function getSocketServer() {
+
+		/**
+		 * Get our SocketServer
+		 *
+		 * @return SocketServer our SocketServer
+		 */
+		public function getSocketServer(): SocketServer {
 			return $this->server;
 		}
 
+		/**
+		 * Run the socket server.
+		 */
 		public function run() {
+			if ($this->isVerbose()) { echo 'Begin listen server on: ', $this->host, ':', $this->port, "\n"; }
 			$this->server->listen();
+		}
+
+		/**
+		 * Set verbose mode.
+		 *
+		 * @param Bool $verbose New value for verbose mode.
+		 */
+		public function setVerbose(Array $verbose) {
+			$this->verbose = $verbose;
+		}
+
+		/**
+		 * Are we running in verbose mode?
+		 *
+		 * @return bool True iif verbose.
+		 */
+		public function isVerbose(): bool {
+			return $this->verbose;
 		}
 
 		/**

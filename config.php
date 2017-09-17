@@ -1,4 +1,6 @@
 <?php
+	$config['verbose'] = false;
+
 	$config['listen']['host'] = getEnvOrDefault('LISTEN_HOST', '[::]');
 	$config['listen']['port'] = getEnvOrDefault('LISTEN_PORT', '3302');
 	$config['listen']['timeout'] = getEnvOrDefault('LISTEN_TIMEOUT', '10');

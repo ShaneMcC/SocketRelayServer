@@ -27,6 +27,7 @@
 			$config = isset($this->config['reporter'][$reportHandler]) ? $this->config['reporter'][$reportHandler] : [];
 
 			if ($reportHandler == 'socketrelay') {
+				// TODO: This should use the event loop rather than blocking.
 				$fp = fsockopen($config['host'], $config['port'], $errno, $errstr, 30);
 				if ($fp) {
 					$out = '-- ' . $config['key'] . ' ' . $messageType . ' ' . $messageParams . "\n";
@@ -46,4 +47,5 @@
 
 	$server->setValidKeys($config['validKeys']);
 	$server->setReportHandler(new RelayReportHandler($config));
+	$server->setVerbose($config['verbose']);
 	$server->run();
