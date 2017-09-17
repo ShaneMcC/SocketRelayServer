@@ -2,11 +2,11 @@
 	namespace shanemcc\socketrelayserver\iface;
 
 	/**
-	 * Class representing a Connection from a Client.
+	 * Class representing a Connection to/from a Socket.
 	 *
-	 * This allows us to read/write data to the client.
+	 * This allows us to read/write data to the socket.
 	 */
-	abstract class ClientConnection {
+	abstract class SocketConnection {
 		/**
 		 * Write some data to the connection and automatically add a "\n" to
 		 * the end.

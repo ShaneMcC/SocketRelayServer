@@ -10,13 +10,13 @@
 		/** @inheritDoc */
 		public function onConnect() {
 			echo '[', $this->getSocketID(), '] ', 'Client Connected.', "\n";
-			$this->getClientConnection()->writeln("Hello client!");
+			$this->getSocketConnection()->writeln("Hello client!");
 		}
 
 		/** @inheritDoc */
 		public function onData(String $data) {
 			echo '[', $this->getSocketID(), '] ', 'Client Data: ', $data, "\n";
-			$this->getClientConnection()->writeln("You said: " . $data);
+			$this->getSocketConnection()->writeln("You said: " . $data);
 		}
 
 		/** @inheritDoc */

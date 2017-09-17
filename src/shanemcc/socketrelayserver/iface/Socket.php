@@ -2,13 +2,13 @@
 	namespace shanemcc\socketrelayserver\iface;
 
 	/**
-	 * Base SocketServer.
+	 * Base Socket.
 	 */
-	abstract class SocketServer {
-		/** @var String Host to listen on. */
+	abstract class Socket {
+		/** @var String Host to use. */
 		private $host;
 
-		/** @var int Port to listen on. */
+		/** @var int Port to use. */
 		private $port;
 
 		/** @var int Timeout for inactive connectons. */
@@ -21,11 +21,11 @@
 		private $loop;
 
 		/**
-		 * Create a new SocketServer
+		 * Create a new Socket
 		 *
 		 * @param MessageLoop $loop Our message loop.
-		 * @param String  $host Host to listen on.
-		 * @param int $port Port to listen on.
+		 * @param String  $host Host to use.
+		 * @param int $port Port to use.
 		 * @param int $timeout How long to allow client sockets to be idle.
 		 */
 		public function __construct(MessageLoop $loop, String $host, int $port, int $timeout) {
@@ -45,18 +45,18 @@
 		}
 
 		/**
-		 * Get our listen host.
+		 * Get our host.
 		 *
-		 * @return String Listen host
+		 * @return String host
 		 */
 		public function getHost(): String {
 			return $this->host;
 		}
 
 		/**
-		 * Get our listen port.
+		 * Get our port.
 		 *
-		 * @return int Listen port
+		 * @return int port
 		 */
 		public function getPort(): int {
 			return $this->port;
@@ -90,7 +90,7 @@
 		}
 
 		/**
-		 * Called to start the server listening.
+		 * Called to start the socket listening.
 		 */
 		public abstract function listen();
 

@@ -2,29 +2,29 @@
 	namespace shanemcc\socketrelayserver\iface;
 
 	/**
-	 * Class to deal with handling a ClientConnection.
+	 * Class to deal with handling a SocketConnection.
 	 *
 	 * Each new client is handled by a new instance of this class.
 	 */
 	abstract class SocketHandler {
-		/** @var ClientConnection Our client */
+		/** @var SocketConnection Our client */
 		private $conn;
 
 		/**
 		 * Create a new SocketHandler
 		 *
-		 * @param ClientConnection $conn Client to handle
+		 * @param SocketConnection $conn Client to handle
 		 */
-		public function __construct(ClientConnection $conn) {
+		public function __construct(SocketConnection $conn) {
 			$this->conn = $conn;
 		}
 
 		/**
-		 * Get the ClientConnection we are handling
+		 * Get the SocketConnection we are handling
 		 *
-		 * @return ClientConnection Connection that we are handling
+		 * @return SocketConnection Connection that we are handling
 		 */
-		protected function getClientConnection(): ClientConnection {
+		protected function getSocketConnection(): SocketConnection {
 			return $this->conn;
 		}
 
@@ -32,6 +32,11 @@
 		 * Called when the socket first connects.
 		 */
 		public abstract function onConnect();
+
+		/**
+		 * Called when a new connection is refused before closing it.
+		 */
+		public function onConnectRefused() { }
 
 		/**
 		 * Called when we recieve data from the socket.
@@ -44,6 +49,13 @@
 		 * Called when the socket is closed.
 		 */
 		public abstract function onClose();
+
+		/**
+		 * Called when we are closing a socket. .
+		 *
+		 * @param String $reason Reason the socket is closing.
+		 */
+		public function closeSocket(String $reason) { }
 
 		/**
 		 * Called when the socket timeout is reached.
@@ -61,6 +73,6 @@
 		 * @return String SocketID.
 		 */
 		public function getSocketID() {
-			return $this->getClientConnection()->getRemoteAddress();
+			return $this->getSocketConnection()->getRemoteAddress();
 		}
 	}

@@ -8,14 +8,14 @@
 	 */
 	abstract class MessageLoop {
 		/**
-		 * Get a SocketServer that uses this message loop.
+		 * Get a Socket that uses this message loop.
 		 *
 		 * @param String  $host Host to listen on.
 		 * @param int $port Port to listen on.
 		 * @param int $timeout How long to allow client sockets to be idle.
-		 * @return SocketServer A SocketServer.
+		 * @return Socket A Socket.
 		 */
-		public abstract function getSocketServer(String $host, int $port, int $timeout): SocketServer;
+		public abstract function getSocket(String $host, int $port, int $timeout): Socket;
 
 		/**
 		 * Run this MessageLoop

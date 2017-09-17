@@ -1,7 +1,7 @@
 <?php
 	namespace shanemcc\socketrelayserver\impl\ReactSocket;
 	use shanemcc\socketrelayserver\iface\MessageLoop as BaseMessageLoop;
-	use shanemcc\socketrelayserver\iface\SocketServer as BaseSocketServer;
+	use shanemcc\socketrelayserver\iface\Socket as BaseSocket;
 
 	use React\EventLoop\Factory as EventLoopFactory;
 	use React\EventLoop\LoopInterface;
@@ -22,8 +22,8 @@
 		}
 
 		/** @inheritDoc */
-		public function getSocketServer(String $host, int $port, int $timeout): BaseSocketServer {
-			return new SocketServer($this, $host, $port, $timeout);
+		public function getSocket(String $host, int $port, int $timeout): BaseSocket {
+			return new Socket($this, $host, $port, $timeout);
 		}
 
 		/** @inheritDoc */

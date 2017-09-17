@@ -4,9 +4,7 @@
 	use shanemcc\socketrelayserver\iface\SocketHandler;
 
 	/**
-	 * Class to deal with handling a ClientConnection.
-	 *
-	 * Each new client is handled by a new instance of this class.
+	 * Deal with sending a report somewhere.
 	 */
 	interface ReportHandler {
 		/**

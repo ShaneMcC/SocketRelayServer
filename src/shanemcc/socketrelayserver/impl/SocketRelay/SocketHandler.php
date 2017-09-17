@@ -2,7 +2,7 @@
 	namespace shanemcc\socketrelayserver\impl\SocketRelay;
 
 	use shanemcc\socketrelayserver\iface\SocketHandler as BaseSocketHandler;
-	use shanemcc\socketrelayserver\iface\ClientConnection;
+	use shanemcc\socketrelayserver\iface\SocketConnection;
 	use shanemcc\socketrelayserver\SocketRelayServer;
 	use shanemcc\socketrelayserver\iface\ReportHandler;
 
@@ -22,10 +22,10 @@
 		/**
 		 * Create a new SocketHandler
 		 *
-		 * @param ClientConnection $conn Client to handle
+		 * @param SocketConnection $conn Client to handle
 		 * @param SocketRelayServer $server Server that owns us.
 		 */
-		public function __construct(ClientConnection $conn, SocketRelayServer $server) {
+		public function __construct(SocketConnection $conn, SocketRelayServer $server) {
 			parent::__construct($conn);
 			$this->server = $server;
 		}
@@ -127,6 +127,12 @@
 		}
 
 		/** @inheritDoc */
+		public function onConnectRefused() {
+			$this->sendResponse('--', 'Sck', 'Closing Connection.');
+			if ($this->server->isVerbose()) { echo '[', $this->getSocketID(), '] Client Connection refused. ', "\n"; }
+		}
+
+		/** @inheritDoc */
 		public function onData(String $data) {
 			if (empty($data)) { return; }
 			if ($this->server->isVerbose()) { echo '[', $this->getSocketID(), '] Data: ', $data, "\n"; }
@@ -180,6 +186,11 @@
 		}
 
 		/** @inheritDoc */
+		public function closeSocket(String $reason) {
+			$this->sendResponse('--', 'Sck', 'Closing Connection - ' . $reason);
+		}
+
+		/** @inheritDoc */
 		public function onTimeout(): bool {
 			$this->sendResponse('--', 'Sck', 'Closing Connection - Timeout');
 			return true;
@@ -192,7 +203,7 @@
 		 */
 		public function closeConnection(String $number = '--') {
 			$this->sendResponse($number, 'Sck', 'Closing Connection');
-			$this->getClientConnection()->close();
+			$this->getSocketConnection()->close();
 		}
 
 		/**
@@ -204,7 +215,7 @@
 		 */
 		public function sendResponse(String $number, String $type, String $message) {
 			$line = sprintf('[%s %s] %s', $number, $type, $message);
-			$this->getClientConnection()->writeln($line);
+			$this->getSocketConnection()->writeln($line);
 			if ($this->server->isVerbose()) { echo '[', $this->getSocketID(), '] Response: ', $line, "\n"; }
 		}
 

@@ -30,12 +30,12 @@
 				}
 			} else if ($messageBits[0] == 'KILL') {
 				$reason = isset($messageBits[1]) ? $messageBits[1] : 'Server closing.';
-				$socketServer = $handler->getServer()->getSocketServer();
-				$socketServer->close($reason);
+				$socket = $handler->getServer()->getSocket();
+				$socket->close($reason);
 
 				// Give sockets time to clear their write buffer before we exit.
-				$socketServer->getMessageLoop()->schedule(1, false, function() use ($socketServer) {
-					$socketServer->getMessageLoop()->stop();
+				$socket->getMessageLoop()->schedule(1, false, function() use ($socket) {
+					$socket->getMessageLoop()->stop();
 				});
 				return true;
 			}

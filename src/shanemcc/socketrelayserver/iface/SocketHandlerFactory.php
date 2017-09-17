@@ -2,14 +2,14 @@
 	namespace shanemcc\socketrelayserver\iface;
 
 	/**
-	 * Interface for a Factory to create new SocketHandlers for ClientConnections.
+	 * Interface for a Factory to create new SocketHandlers for SocketConnection.
 	 */
 	interface SocketHandlerFactory {
 		/**
-		 * Create a new SocketHandler for the given ClientConnection.
+		 * Create a new SocketHandler for the given SocketConnection.
 		 *
-		 * @param  ClientConnection $conn ClientConnection to hanle
+		 * @param  SocketConnection $conn SocketConnection to hanle
 		 * @return SocketHandler New Handler.
 		 */
-		public function get(ClientConnection $conn) : SocketHandler;
+		public function get(SocketConnection $conn) : SocketHandler;
 	}

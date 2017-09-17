@@ -1,13 +1,13 @@
 <?php
 	namespace shanemcc\socketrelayserver\impl\ReactSocket;
 
-	use shanemcc\socketrelayserver\iface\ClientConnection as BaseClientConnection;
+	use shanemcc\socketrelayserver\iface\SocketConnection as BaseSocketConnection;
 	use React\Socket\ConnectionInterface;
 
 	/**
-	 * React\Socket implementation of ClientConnection
+	 * React\Socket implementation of SocketConnection
 	 */
-	class ClientConnection extends BaseClientConnection {
+	class SocketConnection extends BaseSocketConnection {
 		/** @var ConnectionInterface Connection object. */
 		private $conn;
 

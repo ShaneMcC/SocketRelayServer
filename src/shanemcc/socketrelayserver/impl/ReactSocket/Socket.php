@@ -4,14 +4,14 @@
 	use React\Socket\TcpServer;
 	use React\Socket\ConnectionInterface;
 
-	use shanemcc\socketrelayserver\iface\SocketServer as BaseSocketServer;
-	use shanemcc\socketrelayserver\impl\ReactSocket\ClientConnection;
+	use shanemcc\socketrelayserver\iface\Socket as BaseSocket;
+	use shanemcc\socketrelayserver\impl\ReactSocket\SocketConnection;
 
 	/**
-	 * SocketServer Implemenation using ReactPHP library.
+	 * Socket Implemenation using ReactPHP library.
 	 */
-	class SocketServer extends BaseSocketServer {
-		/** @var ConcertoSocketServer Underlying SocketServer */
+	class Socket extends BaseSocket {
+		/** @var TcpServer Underlying Socket */
 		private $server;
 
 		/** @var Array of open handlers. */
@@ -21,11 +21,15 @@
 		private $allowNew = false;
 
 		/** @inheritDoc */
+		public function __construct(MessageLoop $loop, String $host, int $port, int $timeout) {
+			parent::__construct($loop, $host, $port, $timeout);
+			$this->handlers = new \SplObjectStorage();
+		}
+
+		/** @inheritDoc */
 		public function listen() {
 			if ($this->server !== null) { throw new Exception('Already Listening.'); }
 			$this->allowNew = true;
-
- 			$this->handlers = new \SplObjectStorage();
 
  			if ($this->getMessageLoop() instanceof MessageLoop) {
 				$this->server = new TcpServer($this->getHost() . ':' . $this->getPort(), $this->getMessageLoop()->getLoopInterface());
@@ -33,14 +37,19 @@
 				throw new Exception('Invalid MessageLoop');
 			}
 
+			$this->setEvents();
+		}
+
+		/** @inheritDoc */
+		protected function setEvents() {
 			$this->server->on('connection', function(ConnectionInterface $conn) {
-				$clientConnection = new ClientConnection($conn);
-				$handler = $this->getSocketHandlerFactory()->get($clientConnection);
-				$this->handlers[$handler] = ['time' => time(), 'conn' => $clientConnection];
+				$SocketConnection = new SocketConnection($conn);
+				$handler = $this->getSocketHandlerFactory()->get($SocketConnection);
+				$this->handlers[$handler] = ['time' => time(), 'conn' => $SocketConnection];
 
 				if (!$this->allowNew) {
-					$handler->sendResponse('--', 'Sck', 'Closing Connection.');
-					$clientConnection->close();
+					try { $handler->onConnectRefused(); } catch (Throwable $ex) { $this->onError('connect', $ex); }
+					$SocketConnection->close();
 					return;
 				}
 
@@ -87,7 +96,6 @@
 					unset($this->handlers[$handler]);
 				}
 			});
-
 		}
 
 		/**
@@ -105,13 +113,13 @@
 		}
 
 		/** @inheritDoc */
-		public function close(String $message = 'Server closing.') {
+		public function close(String $message = 'Socket closing.') {
 			// Stop accepting any new sockets.
 			$this->allowNew = false;
 
 			// Close sockets.
 			foreach ($this->handlers as $handler) {
-				$handler->sendResponse('--', 'Sck', 'Closing Connection - ' . $message);
+				$handler->closeSocket($message);
 				$this->handlers[$handler]['conn']->close();
 				unset($this->handlers[$handler]);
 			}

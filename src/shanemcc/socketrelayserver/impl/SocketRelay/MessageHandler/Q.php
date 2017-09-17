@@ -19,7 +19,7 @@
 			// Don't duplicate the close message if the user sends "-- <KEY> Q"
 			if ($number != '--') {
 				$handler->sendResponse($number, 'Sck', 'Closing Connection');
-				$handler->getClientConnection()->close();
+				$handler->getSocketConnection()->close();
 			}
 
 			return true;

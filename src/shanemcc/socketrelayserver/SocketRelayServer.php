@@ -4,7 +4,7 @@
 	use shanemcc\socketrelayserver\impl\SocketRelay\SocketHandlerFactory as SocketRelay_SocketHandlerFactory;
 	use shanemcc\socketrelayserver\impl\SocketRelay\SocketHandler as SocketRelay_SocketHandler;
 	use shanemcc\socketrelayserver\iface\ReportHandler;
-	use shanemcc\socketrelayserver\iface\SocketServer as BaseSocketServer;
+	use shanemcc\socketrelayserver\iface\Socket as BaseSocket;
 	use shanemcc\socketrelayserver\iface\MessageLoop;
 
 	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\MessageHandler;
@@ -31,7 +31,7 @@
 		/** @var bool Are we running in verbose mode? */
 		private $verbose;
 
-		/** @var iface\SocketServer SocketServer we are using. */
+		/** @var Socket Socket we are using. */
 		private $server;
 
 		/** @var MessageLoop MessageLoop that we are being run from. */
@@ -56,14 +56,14 @@
 			$this->host = $host;
 			$this->port = $port;
 			$this->timeout = $timeout;
-			$this->setSocketServer();
+			$this->setServerSocket();
 		}
 
 		/**
-		 * Set up the socket server.
+		 * Set up the server socket.
 		 */
-		private function setSocketServer() {
-			$this->server = $this->messageLoop->getSocketServer($this->host, $this->port, $this->timeout);
+		private function setServerSocket() {
+			$this->server = $this->messageLoop->getSocket($this->host, $this->port, $this->timeout);
 			$this->server->setSocketHandlerFactory(new SocketRelay_SocketHandlerFactory($this));
 
 			SocketRelay_SocketHandler::addMessageHandler(new A());
@@ -76,11 +76,11 @@
 
 
 		/**
-		 * Get our SocketServer
+		 * Get our Server Socket
 		 *
-		 * @return SocketServer our SocketServer
+		 * @return Socket our Server Socket
 		 */
-		public function getSocketServer(): BaseSocketServer {
+		public function getSocket(): BaseSocket {
 			return $this->server;
 		}
 

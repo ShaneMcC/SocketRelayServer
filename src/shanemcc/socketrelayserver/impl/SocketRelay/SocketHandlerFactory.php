@@ -2,7 +2,7 @@
 	namespace shanemcc\socketrelayserver\impl\SocketRelay;
 
 	use shanemcc\socketrelayserver\iface\SocketHandlerFactory as BaseSocketHandlerFactory;
-	use shanemcc\socketrelayserver\iface\ClientConnection;
+	use shanemcc\socketrelayserver\iface\SocketConnection;
 	use shanemcc\socketrelayserver\iface\SocketHandler as BaseSocketHandler;
 	use shanemcc\socketrelayserver\SocketRelayServer;
 
@@ -23,7 +23,7 @@
 		}
 
 		/** @inheritDoc */
-		public function get(ClientConnection $conn) : BaseSocketHandler {
+		public function get(SocketConnection $conn) : BaseSocketHandler {
 			return new SocketHandler($conn, $this->server);
 		}
 	}
