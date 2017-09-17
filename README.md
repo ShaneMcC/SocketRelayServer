@@ -1,2 +1,3 @@
 # SocketRelayServer
-PHP Implementation of SocketRelay protocol.
+
+PHP Implementation of my SocketRelay notification protocol.

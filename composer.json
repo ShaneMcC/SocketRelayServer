@@ -1,0 +1,20 @@
+{
+    "name": "shanemcc/socketrelayserver",
+    "description": "PHP SocketRelay Server Implementation",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Shane Mc Cormack",
+            "email": "shanemcc@gmail.com"
+        }
+    ],
+    "require": {
+        "react/socket": "^0.8.4"
+    },
+    "autoload": {
+        "psr-0": {
+            "shanemcc\\socketrelayserver\\": "src/"
+        }
+    }
+}
