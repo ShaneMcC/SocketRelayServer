@@ -1,7 +1,7 @@
 <?php
 
 	namespace shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler;
-	use shanemcc\socketrelayserver\impl\SocketRelay\SocketHandler;
+	use shanemcc\socketrelayserver\impl\SocketRelay\ServerSocketHandler;
 
 	class HELP extends MessageHandler {
 		/** @inheritDoc. */
@@ -15,7 +15,7 @@
 		}
 
 		/** @inheritDoc */
-		public function handleMessage(SocketHandler $handler, String $number, String $key, String $messageParams): bool {
+		public function handleMessage(ServerSocketHandler $handler, String $number, String $key, String $messageParams): bool {
 
 			$rType = ($key == '--') ? '--' : '??';
 

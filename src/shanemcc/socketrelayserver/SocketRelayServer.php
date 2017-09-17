@@ -1,8 +1,8 @@
 <?php
 	namespace shanemcc\socketrelayserver;
 
-	use shanemcc\socketrelayserver\impl\SocketRelay\SocketHandlerFactory as SocketRelay_SocketHandlerFactory;
-	use shanemcc\socketrelayserver\impl\SocketRelay\SocketHandler as SocketRelay_SocketHandler;
+	use shanemcc\socketrelayserver\impl\SocketRelay\ServerSocketHandlerFactory as SocketRelay_ServerSocketHandlerFactory;
+	use shanemcc\socketrelayserver\impl\SocketRelay\ServerSocketHandler as SocketRelay_ServerSocketHandler;
 	use shanemcc\socketrelayserver\iface\ReportHandler;
 	use shanemcc\socketrelayserver\iface\Socket as BaseSocket;
 	use shanemcc\socketrelayserver\iface\MessageLoop;
@@ -64,14 +64,14 @@
 		 */
 		private function setServerSocket() {
 			$this->server = $this->messageLoop->getSocket($this->host, $this->port, $this->timeout);
-			$this->server->setSocketHandlerFactory(new SocketRelay_SocketHandlerFactory($this));
+			$this->server->setSocketHandlerFactory(new SocketRelay_ServerSocketHandlerFactory($this));
 
-			SocketRelay_SocketHandler::addMessageHandler(new A());
-			SocketRelay_SocketHandler::addMessageHandler(new Q());
-			SocketRelay_SocketHandler::addMessageHandler(new LS());
-			SocketRelay_SocketHandler::addMessageHandler(new CM());
-			SocketRelay_SocketHandler::addMessageHandler(new PM());
-			SocketRelay_SocketHandler::addMessageHandler(new HELP());
+			SocketRelay_ServerSocketHandler::addMessageHandler(new A());
+			SocketRelay_ServerSocketHandler::addMessageHandler(new Q());
+			SocketRelay_ServerSocketHandler::addMessageHandler(new LS());
+			SocketRelay_ServerSocketHandler::addMessageHandler(new CM());
+			SocketRelay_ServerSocketHandler::addMessageHandler(new PM());
+			SocketRelay_ServerSocketHandler::addMessageHandler(new HELP());
 		}
 
 

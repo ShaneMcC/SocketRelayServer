@@ -1,7 +1,7 @@
 <?php
 
 	namespace shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler;
-	use shanemcc\socketrelayserver\impl\SocketRelay\SocketHandler;
+	use shanemcc\socketrelayserver\impl\SocketRelay\ServerSocketHandler;
 
 	class LS extends MessageHandler {
 		/** @inheritDoc. */
@@ -15,9 +15,9 @@
 		}
 
 		/** @inheritDoc */
-		public function handleMessage(SocketHandler $handler, String $number, String $key, String $messageParams): bool {
+		public function handleMessage(ServerSocketHandler $handler, String $number, String $key, String $messageParams): bool {
 			$handler->sendResponse($number, 'LS', '# Name -- Desc');
-			foreach (SocketHandler::getMessageHandlers() as $messageType => $messageHandler) {
+			foreach (ServerSocketHandler::getMessageHandlers() as $messageType => $messageHandler) {
 				if ($handler->canAccess($key, $messageType)) {
 					$handler->sendResponse($number, 'LS', $messageType . ' -- ' . $messageHandler['description']);
 				}

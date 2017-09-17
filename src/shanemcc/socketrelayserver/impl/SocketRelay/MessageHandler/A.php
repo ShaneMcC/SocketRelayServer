@@ -2,7 +2,7 @@
 
 	namespace shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler;
 	use shanemcc\socketrelayserver\iface\ReportHandler;
-	use shanemcc\socketrelayserver\impl\SocketRelay\SocketHandler;
+	use shanemcc\socketrelayserver\impl\SocketRelay\ServerSocketHandler;
 
 	class A extends MessageHandler {
 		/** @inheritDoc. */
@@ -16,7 +16,7 @@
 		}
 
 		/** @inheritDoc */
-		public function handleMessage(SocketHandler $handler, String $number, String $key, String $messageParams): bool {
+		public function handleMessage(ServerSocketHandler $handler, String $number, String $key, String $messageParams): bool {
 			$messageBits = explode(' ', $messageParams);
 
 			$messageBits[0] = strtoupper($messageBits[0]);

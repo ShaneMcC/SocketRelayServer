@@ -9,12 +9,12 @@
 	/**
 	 * Factory to create SocketRelay SocketHandlers.
 	 */
-	class SocketHandlerFactory implements BaseSocketHandlerFactory {
+	class ServerSocketHandlerFactory implements BaseSocketHandlerFactory {
 		/** @var SocketRelayServer Server that owns us. */
 		private $server;
 
 		/**
-		 * Create a new SocketHandlerFactory
+		 * Create a new ServerSocketHandlerFactory
 		 *
 		 * @param SocketRelayServer $server Server that owns us.
 		 */
@@ -24,6 +24,6 @@
 
 		/** @inheritDoc */
 		public function get(SocketConnection $conn) : BaseSocketHandler {
-			return new SocketHandler($conn, $this->server);
+			return new ServerSocketHandler($conn, $this->server);
 		}
 	}

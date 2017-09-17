@@ -1,7 +1,7 @@
 <?php
 
 	namespace shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler;
-	use shanemcc\socketrelayserver\impl\SocketRelay\SocketHandler;
+	use shanemcc\socketrelayserver\impl\SocketRelay\ServerSocketHandler;
 
 	abstract class MessageHandler {
 		/**
@@ -33,6 +33,6 @@
 		 * @return bool True if message was handled or false if we should fire
 		 *              the invalid message handler.
 		 */
-		public abstract function handleMessage(SocketHandler $handler, String $number, String $key, String $messageParams): bool;
+		public abstract function handleMessage(ServerSocketHandler $handler, String $number, String $key, String $messageParams): bool;
 
 	}

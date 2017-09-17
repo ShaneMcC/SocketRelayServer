@@ -10,9 +10,9 @@
 	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\HELP;
 
 	/**
-	 * SocketRelay SocketHandler.
+	 * SocketRelay ServerSocketHandler.
 	 */
-	class SocketHandler extends BaseSocketHandler {
+	class ServerSocketHandler extends BaseSocketHandler {
 		/** @var SocketRelayServer Server that owns us. */
 		private $server;
 
@@ -20,7 +20,7 @@
 		private static $handlers = [];
 
 		/**
-		 * Create a new SocketHandler
+		 * Create a new ServerSocketHandler
 		 *
 		 * @param SocketConnection $conn Client to handle
 		 * @param SocketRelayServer $server Server that owns us.
