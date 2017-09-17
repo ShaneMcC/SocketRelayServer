@@ -1,11 +1,11 @@
 <?php
 	namespace shanemcc\socketrelayserver;
 
-	use shanemcc\socketrelayserver\impl\ReactSocket\SocketServer as React_Socket_SocketServer;
 	use shanemcc\socketrelayserver\impl\SocketRelay\SocketHandlerFactory as SocketRelay_SocketHandlerFactory;
 	use shanemcc\socketrelayserver\impl\SocketRelay\SocketHandler as SocketRelay_SocketHandler;
 	use shanemcc\socketrelayserver\iface\ReportHandler;
 	use shanemcc\socketrelayserver\iface\SocketServer as BaseSocketServer;
+	use shanemcc\socketrelayserver\iface\MessageLoop;
 
 	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\MessageHandler;
 	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\Q;
@@ -34,6 +34,9 @@
 		/** @var iface\SocketServer SocketServer we are using. */
 		private $server;
 
+		/** @var MessageLoop MessageLoop that we are being run from. */
+		private $messageLoop;
+
 		/** @var ReportHandler ReportHandler. */
 		private $reportHandler;
 
@@ -43,11 +46,13 @@
 		/**
 		 * Create a new SocketRelayServer
 		 *
+		 * @param MessageLoop $loop MessageLoop we are being run from.
 		 * @param String  $host Host to listen on.
 		 * @param int $port Port to listen on.
 		 * @param int $timeout Timeout for inactive connections.
 		 */
-		public function __construct(String $host, int $port, int $timeout) {
+		public function __construct(MessageLoop $loop, String $host, int $port, int $timeout) {
+			$this->messageLoop = $loop;
 			$this->host = $host;
 			$this->port = $port;
 			$this->timeout = $timeout;
@@ -58,7 +63,7 @@
 		 * Set up the socket server.
 		 */
 		private function setSocketServer() {
-			$this->server = new React_Socket_SocketServer($this->host, $this->port, $this->timeout);
+			$this->server = $this->messageLoop->getSocketServer($this->host, $this->port, $this->timeout);
 			$this->server->setSocketHandlerFactory(new SocketRelay_SocketHandlerFactory($this));
 
 			SocketRelay_SocketHandler::addMessageHandler(new A());
@@ -80,9 +85,9 @@
 		}
 
 		/**
-		 * Run the socket server.
+		 * Set the server to listen.
 		 */
-		public function run() {
+		public function listen() {
 			if ($this->isVerbose()) { echo 'Begin listen server on: ', $this->host, ':', $this->port, "\n"; }
 			$this->server->listen();
 		}

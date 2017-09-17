@@ -7,6 +7,8 @@
 	use shanemcc\socketrelayserver\iface\SocketHandler as BaseSocketHandler;
 	use shanemcc\socketrelayserver\impl\SocketRelay\SocketHandler as SocketRelaySocketHandler;
 
+	use shanemcc\socketrelayserver\impl\ReactSocket\MessageLoop as React_MessageLoop;
+
 	// TODO: Do this better.
 	class RelayReportHandler implements ReportHandler {
 		/** @var Array Array of config. */
@@ -43,9 +45,12 @@
 	}
 
 
-	$server = new SocketRelayServer($config['listen']['host'], (int)$config['listen']['port'], (int)$config['listen']['timeout']);
+	$loop = new React_MessageLoop();
 
+	$server = new SocketRelayServer($loop, $config['listen']['host'], (int)$config['listen']['port'], (int)$config['listen']['timeout']);
 	$server->setValidKeys($config['validKeys']);
 	$server->setReportHandler(new RelayReportHandler($config));
 	$server->setVerbose($config['verbose']);
-	$server->run();
+	$server->listen();
+
+	$loop->run();

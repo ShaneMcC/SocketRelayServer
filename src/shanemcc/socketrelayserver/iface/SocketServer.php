@@ -17,16 +17,31 @@
 		/** @var SocketHandlerFactory Factory to create SocketHandlers. */
 		private $factory;
 
+		/** @var MessageLoop Our MessageLoop */
+		private $loop;
+
 		/**
-		 * Create a new SocketRelayServer
+		 * Create a new SocketServer
 		 *
+		 * @param MessageLoop $loop Our message loop.
 		 * @param String  $host Host to listen on.
 		 * @param int $port Port to listen on.
+		 * @param int $timeout How long to allow client sockets to be idle.
 		 */
-		public function __construct(String $host, int $port, int $timeout) {
+		public function __construct(MessageLoop $loop, String $host, int $port, int $timeout) {
+			$this->loop = $loop;
 			$this->host = $host;
 			$this->port = $port;
 			$this->timeout = $timeout;
+		}
+
+		/**
+		 * Get our message loop.
+		 *
+		 * @return MessageLoop Our message loop.
+		 */
+		public function getMessageLoop(): MessageLoop {
+			return $this->loop;
 		}
 
 		/**

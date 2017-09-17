@@ -1,9 +1,6 @@
 <?php
 	namespace shanemcc\socketrelayserver\impl\ReactSocket;
 
-	use React\EventLoop\Factory as EventLoopFactory;
-	use React\EventLoop\LoopInterface;
-
 	use React\Socket\TcpServer;
 	use React\Socket\ConnectionInterface;
 
@@ -17,9 +14,6 @@
 		/** @var ConcertoSocketServer Underlying SocketServer */
 		private $server;
 
-		/** @var LoopInterface Event Loop handler. */
-		private $loop;
-
 		/** @var Array of open handlers. */
 		private $handlers;
 
@@ -28,13 +22,16 @@
 
 		/** @inheritDoc */
 		public function listen() {
-			if ($this->loop !== null) { throw new Exception('Already Listening.'); }
+			if ($this->server !== null) { throw new Exception('Already Listening.'); }
 			$this->allowNew = true;
 
  			$this->handlers = new \SplObjectStorage();
 
-			$this->loop = EventLoopFactory::create();
-			$this->server = new TcpServer($this->getHost() . ':' . $this->getPort(), $this->loop);
+ 			if ($this->getMessageLoop() instanceof MessageLoop) {
+				$this->server = new TcpServer($this->getHost() . ':' . $this->getPort(), $this->getMessageLoop()->getLoopInterface());
+			} else {
+				throw new Exception('Invalid MessageLoop');
+			}
 
 			$this->server->on('connection', function(ConnectionInterface $conn) {
 				$clientConnection = new ClientConnection($conn);
@@ -65,7 +62,7 @@
 				});
 			});
 
-			$this->loop->addPeriodicTimer($this->getTimeout(), function() {
+			$this->getMessageLoop()->schedule($this->getTimeout(), true, function() {
 				$timeout = time() - $this->getTimeout();
 
 				$killed = [];
@@ -91,7 +88,6 @@
 				}
 			});
 
-			$this->loop->run();
 		}
 
 		/**
@@ -119,10 +115,5 @@
 				$this->handlers[$handler]['conn']->close();
 				unset($this->handlers[$handler]);
 			}
-
-			// Give sockets time to clear their write buffer before we exit.
-			$this->loop->addPeriodicTimer(1, function() {
-				$this->loop->stop();
-			});
 		}
 	}
