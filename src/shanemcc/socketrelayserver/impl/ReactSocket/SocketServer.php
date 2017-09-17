@@ -121,7 +121,7 @@
 			}
 
 			// Give sockets time to clear their write buffer before we exit.
-			$this->loop->addPeriodicTimer(5, function() {
+			$this->loop->addPeriodicTimer(1, function() {
 				$this->loop->stop();
 			});
 		}

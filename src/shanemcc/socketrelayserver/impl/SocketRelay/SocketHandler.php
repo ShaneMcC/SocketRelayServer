@@ -44,9 +44,9 @@
 		protected function addHandler(String $messageType, String $description, Callable $callable) {
 			$this->handlers[strtoupper($messageType)] = ['description' => $description, 'callable' => $callable];
 
-			if ($this->server->isVerbose()) {
-				echo 'Registered handler for: ', strtoupper($messageType), ' => ', $description, "\n";
-			}
+			// if ($this->server->isVerbose()) {
+			// 	echo 'Registered handler for: ', strtoupper($messageType), ' => ', $description, "\n";
+			// }
 		}
 
 		/**
