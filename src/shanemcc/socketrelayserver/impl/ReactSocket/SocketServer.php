@@ -112,7 +112,6 @@
 		public function close(String $message = 'Server closing.') {
 			// Stop accepting any new sockets.
 			$this->allowNew = false;
-			$this->server->pause();
 
 			// Close sockets.
 			foreach ($this->handlers as $handler) {
