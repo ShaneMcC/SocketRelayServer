@@ -292,7 +292,18 @@
 		 * @param String $key Key that was given.
 		 * @param String $messageParams Params that were given
 		 */
-		public function processMessage_A(String $number, String $key, String $messageParams) { }
+		public function processMessage_A(String $number, String $key, String $messageParams) {
+			$messageBits = explode(' ', $messageParams);
+
+			$messageBits[0] = strtoupper($messageBits[0]);
+
+			if ($messageBits[0] == 'RAW') {
+				$this->processMessage_ReportHandler('A', $number, $key, implode(' ', $messageBits));
+			} else if ($messageBits[0] == 'KILL') {
+				$reason = isset($messageBits[1]) ? $messageBits[1] : 'Server closing.';
+				$this->server->getSocketServer()->close($reason);
+			}
+		}
 
 		/**
 		 * Process a CM message.

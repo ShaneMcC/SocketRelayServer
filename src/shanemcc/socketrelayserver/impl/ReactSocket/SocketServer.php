@@ -41,7 +41,12 @@
 
 				$conn->on('data', function (String $data) use ($handler) {
 					try { $handler->onData(trim($data)); } catch (Throwable $ex) { $this->onError('data', $ex); }
-					$this->handlers[$handler]['time'] = time();
+
+					if ($this->handlers->contains($handler)) {
+						$data = $this->handlers[$handler];
+						$data['time'] = time();
+						$this->handlers[$handler] = $data;
+					}
 				});
 
 				$conn->on('close', function () use ($handler) {
@@ -91,5 +96,23 @@
 			foreach ($throwable->getTrace() as $t) {
 				echo "\t\t", $t, "\n";
 			}
+		}
+
+		/** @inheritDoc */
+		public function close(String $message = 'Server closing.') {
+			// Stop accepting any new sockets.
+			$this->server->pause();
+
+			// Close sockets.
+			foreach ($this->handlers as $handler) {
+				$handler->sendResponse('--', 'Sck', 'Closing Connection - ' . $message);
+				$this->handlers[$handler]['conn']->close();
+				unset($this->handlers[$handler]);
+			}
+
+			// Give sockets time to clear their write buffer before we exit.
+			$this->loop->addPeriodicTimer(5, function() {
+				$this->loop->stop();
+			});
 		}
 	}

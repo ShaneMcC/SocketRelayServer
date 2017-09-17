@@ -38,12 +38,16 @@
 			$this->host = $host;
 			$this->port = $port;
 			$this->timeout = $timeout;
-			$this->setServer();
+			$this->setSocketServer();
 		}
 
-		private function setServer() {
+		private function setSocketServer() {
 			$this->server = new React_Socket_SocketServer($this->host, $this->port, $this->timeout);
 			$this->server->setSocketHandlerFactory(new SocketRelay_SocketHandlerFactory($this));
+		}
+
+		public function getSocketServer() {
+			return $this->server;
 		}
 
 		public function run() {

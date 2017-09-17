@@ -78,4 +78,11 @@
 		 * Called to start the server listening.
 		 */
 		public abstract function listen();
+
+		/**
+		 * Close the server and all open connections.
+		 *
+		 * @param String $message Reason for closing.
+		 */
+		public abstract function close(String $message = 'Server closing.');
 	}
