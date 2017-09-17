@@ -11,6 +11,9 @@
 		/** @var int Port to listen on. */
 		private $port;
 
+		/** @var int Timeout for inactive connectons. */
+		private $timeout;
+
 		/** @var SocketHandlerFactory Factory to create SocketHandlers. */
 		private $factory;
 
@@ -20,9 +23,10 @@
 		 * @param String  $host Host to listen on.
 		 * @param int $port Port to listen on.
 		 */
-		public function __construct(String $host, int $port) {
+		public function __construct(String $host, int $port, int $timeout) {
 			$this->host = $host;
 			$this->port = $port;
+			$this->timeout = $timeout;
 		}
 
 		/**
@@ -41,6 +45,15 @@
 		 */
 		public function getPort(): int {
 			return $this->port;
+		}
+
+		/**
+		 * Get our timeout value.
+		 *
+		 * @return int timeout value.
+		 */
+		public function getTimeout(): int {
+			return $this->timeout;
 		}
 
 		/**

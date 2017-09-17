@@ -46,6 +46,16 @@
 		public abstract function onClose();
 
 		/**
+		 * Called when the socket timeout is reached.
+		 *
+		 * @return bool True if we should close the socket, or false to ignore
+		 *         the timeout.
+		 */
+		public function onTimeout(): bool {
+			return true;
+		}
+
+		/**
 		 * Get the socket ID.
 		 *
 		 * @return String SocketID.

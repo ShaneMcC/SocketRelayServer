@@ -38,4 +38,9 @@
 		 * @return String Local socket address.
 		 */
 		public abstract function getLocalAddress(): String;
+
+		/**
+		 * Close the socket.
+		 */
+		public abstract function close();
 	}

@@ -1,0 +1,12 @@
+[Unit]
+Description=SocketRelay Service
+After=network.target
+
+[Service]
+WorkingDirectory=/etc/socketrelayserver
+ExecStart=/etc/socketrelayserver/run.php
+Restart=always
+User=nobody
+
+[Install]
+WantedBy=multi-user.target

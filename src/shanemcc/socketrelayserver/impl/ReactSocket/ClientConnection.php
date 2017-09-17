@@ -28,4 +28,8 @@
 		public function getLocalAddress(): String {
 			return $this->conn->getLocalAddress();
 		}
+
+		public function close() {
+			$this->conn->end();
+		}
 	}
