@@ -5,9 +5,6 @@
 	use shanemcc\socketrelayserver\impl\SocketRelay\RelayReportHandler;
 	use shanemcc\socketrelayserver\SocketRelayServer;
 	use shanemcc\socketrelayserver\SocketRelayClient;
-	use shanemcc\socketrelayserver\impl\ReactSocket\MessageLoop as React_MessageLoop;
-
-	$loop = new React_MessageLoop();
 
 	$client = null;
 	if ($config['reporthandler'] == 'socketrelay') {
