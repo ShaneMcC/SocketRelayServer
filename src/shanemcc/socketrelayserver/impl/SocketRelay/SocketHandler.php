@@ -111,10 +111,7 @@
 				$key = $parts[1];
 				$messageType = $parts[2];
 
-				if (!$this->isValidKey($key)) {
-					$this->sendResponse($number, 'Err', 'Invalid Key (' . $key . ')');
-					$this->closeConnection($number);
-				} else {
+				if ($this->isValidKey($key)) {
 					if ($this->canAccess($key, $messageType)) {
 						$messageParams = isset($parts[3]) ? $parts[3] : '';
 
@@ -123,6 +120,19 @@
 					} else {
 						$this->invalidHandler($number, $key, '');
 					}
+				} else if ($this->isValidKey($number) && preg_match('/^#/', $key) && isset($parts[2])) {
+					// Support for "OBLONG"-Style reports.
+					$newParts = explode(' ', $data, 3);
+					$newKey = $newParts[0];
+					$newChannel = $newParts[1];
+					$newMessage = $newParts[2];
+
+					if ($this->server->isVerbose()) { echo '[', $this->getSocketID(), '] OBLONG-Emulation: ', "\n"; }
+					$this->onData(sprintf('-- %s CM %s %s', $newKey, $newChannel, $newMessage));
+					return;
+				} else {
+					$this->sendResponse($number, 'Err', 'Invalid Key (' . $key . ')');
+					$this->closeConnection($number);
 				}
 			}
 
