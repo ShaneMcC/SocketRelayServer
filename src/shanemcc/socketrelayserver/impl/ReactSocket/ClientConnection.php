@@ -21,11 +21,11 @@
 			}
 		}
 
-		public function getRemoteAddress(): String {
+		public function getRemoteAddress(): ?String {
 			return $this->conn->getRemoteAddress();
 		}
 
-		public function getLocalAddress(): String {
+		public function getLocalAddress(): ?String {
 			return $this->conn->getLocalAddress();
 		}
 
