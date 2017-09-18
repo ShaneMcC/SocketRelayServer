@@ -3,10 +3,14 @@
 
 	use React\Socket\TcpServer;
 	use React\Socket\Connector;
+	use React\Socket\TimeoutConnector;
 	use React\Socket\ConnectionInterface;
 
 	use shanemcc\socketrelayserver\iface\Socket as BaseSocket;
 	use shanemcc\socketrelayserver\impl\ReactSocket\SocketConnection;
+
+	use \Throwable;
+	use \Exception;
 
 	/**
 	 * Socket Implemenation using ReactPHP library.
@@ -32,7 +36,7 @@
 			if ($this->socket !== null) { throw new Exception('Socket is already active.'); }
 			$this->allowNew = true;
 
- 			if ($this->getMessageLoop() instanceof MessageLoop) {
+			if ($this->getMessageLoop() instanceof MessageLoop) {
 				$this->socket = new TcpServer($this->getHost() . ':' . $this->getPort(), $this->getMessageLoop()->getLoopInterface());
 			} else {
 				throw new Exception('Invalid MessageLoop');
@@ -49,11 +53,10 @@
 			$this->allowNew = true;
 
  			if ($this->getMessageLoop() instanceof MessageLoop) {
-				$this->socket = new Connector($this->getMessageLoop()->getLoopInterface());
+ 				$loop = $this->getMessageLoop()->getLoopInterface();
+				$this->socket = new TimeoutConnector(new Connector($loop), 5, $loop);
 
-				$this->socket->connect($this->getHost() . ':' . $this->getPort())->then([$this, 'handleConnection'], function (Exception $error) {
-					// failed to connect due to $error
-					// TODO: This needs to be passed back somewhere somehow.
+				$this->socket->connect($this->getHost() . ':' . $this->getPort())->then([$this, 'handleConnection'], function (Throwable $error) {
 					$this->onError('connectattempt', $error);
 				});
 
@@ -78,7 +81,10 @@
 			try { $handler->onConnect(); } catch (Throwable $ex) { $this->onError('connect', $ex); }
 
 			$conn->on('data', function (String $data) use ($handler) {
-				try { $handler->onData(trim($data)); } catch (Throwable $ex) { $this->onError('data', $ex); }
+				$data = explode("\n", trim($data));
+				foreach ($data as $d) {
+					try { $handler->onData(trim($d)); } catch (Throwable $ex) { $this->onError('data', $ex); }
+				}
 
 				if ($this->handlers->contains($handler)) {
 					$data = $this->handlers[$handler];
@@ -122,20 +128,6 @@
 					unset($this->handlers[$handler]);
 				}
 			});
-		}
-
-		/**
-		 * Display exception information.
-		 *
-		 * @param String $handlerName Handler name.
-		 * @param Throwable $throwable The exception.
-		 */
-		public function onError(String $handlerName, Throwable $throwable) {
-			echo 'Throwable in ', $handlerName, ' handler.', "\n";
-			echo "\t", $throwable->getMessage(), "\n";
-			foreach ($throwable->getTrace() as $t) {
-				echo "\t\t", $t, "\n";
-			}
 		}
 
 		/** @inheritDoc */

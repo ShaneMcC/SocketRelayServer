@@ -5,6 +5,8 @@
 	$config['listen']['port'] = getEnvOrDefault('LISTEN_PORT', '3302');
 	$config['listen']['timeout'] = getEnvOrDefault('LISTEN_TIMEOUT', '10');
 
+	$config['failFile'] = __DIR__ . '/.failedMessages';
+
 	$config['reporthandler'] = 'socketrelay';
 	$config['reporter']['socketrelay']['host'] = getEnvOrDefault('REPORTER_SOCKETRELAY_HOST', 'somehost');
 	$config['reporter']['socketrelay']['port'] = getEnvOrDefault('REPORTER_SOCKETRELAY_PORT', '3302');

@@ -1,11 +1,15 @@
 <?php
 	namespace shanemcc\socketrelayserver;
 
-	use shanemcc\socketrelayserver\impl\SocketRelay\ClientSocketHandlerFactory as SocketRelay_ClientSocketHandlerFactory;
+	use shanemcc\socketrelayserver\iface\SocketHandlerFactory as BaseSocketHandlerFactory;
+	use shanemcc\socketrelayserver\iface\SocketHandler as BaseSocketHandler;
+	use shanemcc\socketrelayserver\iface\SocketConnection;
+
 	use shanemcc\socketrelayserver\impl\SocketRelay\ClientSocketHandler as SocketRelay_ClientSocketHandler;
 	use shanemcc\socketrelayserver\iface\ReportHandler;
 	use shanemcc\socketrelayserver\iface\Socket as BaseSocket;
 	use shanemcc\socketrelayserver\iface\MessageLoop;
+
 
 	/**
 	 * SocketRelayClient
@@ -23,17 +27,11 @@
 		/** @var String Our key */
 		private $key;
 
-		/** @var Socket Socket we are using. */
-		private $client;
-
 		/** @var MessageLoop MessageLoop that we are being run from. */
 		private $messageLoop;
 
 		/** @var Array Messages pending sending */
 		private $messages = [];
-
-		/** @var Callable Callback after messages are sent. */
-		private $messagesSentCallback;
 
 		/**
 		 * Create a new SocketRelayClient
@@ -53,52 +51,38 @@
 		}
 
 		/**
-		 * Set up the client socket.
-		 */
-		private function setClientSocket() {
-			$this->client = $this->messageLoop->getSocket($this->host, $this->port, $this->timeout);
-			$this->client->setSocketHandlerFactory(new SocketRelay_ClientSocketHandlerFactory($this));
-		}
-
-		/**
 		 * Send all the messages.
 		 *
+		 * @param Callable $success Function to run once complete.
+		 * @param Callable $error Function to run if there is an error.
 		 * @param Array/String $messages Optional array or string of additional
 		 *                               message(s) to send.
 		 */
-		public function send($messages = []) {
-			if (!is_array($messages) && is_string($messages)) {
-				$messages = [$messages];
-			}
-			if (is_array($messages)) {
-				foreach ($messages as $msg) { $this->addMessage($msg); }
-			}
+		public function send(?Callable $success = null, ?Callable $error = null) {
+			$client = $this->messageLoop->getSocket($this->host, $this->port, $this->timeout);
 
-			$this->setClientSocket();
-			$this->client->connect();
-		}
+			$messages = $this->getMessages();
+			$this->clearMessages();
 
-		/**
-		 * Send all the messages.
-		 *
-		 * @param Callable $callback Function to run once complete.
-		 * @param Array/String $messages Optional array or string of additional
-		 *                               message(s) to send.
-		 */
-		public function sendWithCallback($callback, $messages = []) {
-			$this->messagesSentCallback = $callback;
-			$this->send($messages);
-		}
+			$client->setSocketHandlerFactory(new class($this->getKey(), $messages, $success) implements BaseSocketHandlerFactory {
+				private $key;
+				private $messages;
+				private $success;
 
-		/**
-		 * Called after all the messages have been sent to reset the socket.
-		 */
-		public function messagesSent() {
-			$this->client = null;
-			if ($this->messagesSentCallback != null) {
-				call_user_func($this->messagesSentCallback);
-				$this->messagesSentCallback = null;
+				public function __construct(String $key, Array $messages, ?Callable $success = null) {
+					$this->key = $key;
+					$this->messages = $messages;
+					$this->success = $success;
+				}
+
+				public function get(SocketConnection $conn) : BaseSocketHandler {
+					return new SocketRelay_ClientSocketHandler($conn, $this->key, $this->messages, $this->success);
+				}
+			});
+			if (is_callable($error)) {
+				$client->setErrorHandler($error);
 			}
+			$client->connect();
 		}
 
 		/**
@@ -138,9 +122,22 @@
 		/**
 		 * Add a new pending message.
 		 *
-		 * @param String $messages Message to send.
+		 * @param String|Array $message Message to send.
+		 * @return SocketRelayClient $this for chaining.
 		 */
-		public function addMessage(String $message) {
-			$this->messages[] = $message;
+		public function addMessage($message): SocketRelayClient {
+			if (is_callable($message)) {
+				$this->messages[] = $message;
+			} else if (!is_array($message) && is_string($message)) {
+				$this->messages[] = $message;
+			} else if (is_array($message)) {
+				foreach ($message as $msg) {
+					if (is_string($msg)) {
+						$this->messages[] = $msg;
+					}
+				}
+			}
+
+			return $this;
 		}
 	}

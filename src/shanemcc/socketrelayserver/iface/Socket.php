@@ -1,6 +1,8 @@
 <?php
 	namespace shanemcc\socketrelayserver\iface;
 
+	use \Throwable;
+
 	/**
 	 * Base Socket.
 	 */
@@ -20,6 +22,9 @@
 		/** @var MessageLoop Our MessageLoop */
 		private $loop;
 
+		/** @var Callable Error Handler */
+		private $errorHandler;
+
 		/**
 		 * Create a new Socket
 		 *
@@ -33,6 +38,56 @@
 			$this->host = $host;
 			$this->port = $port;
 			$this->timeout = $timeout;
+		}
+
+		/**
+		 * Get our error Handler.
+		 *
+		 * @return Callable Our error handler.
+		 */
+		public function getErrorHandler(): Callable {
+			return $this->errorHandler;
+		}
+
+		/**
+		 * Set our error Handler.
+		 *
+		 * @param Callable $handler New error handler.
+		 */
+		public function setErrorHandler(Callable $handler) {
+			$this->errorHandler = $handler;
+		}
+
+		/**
+		 * Handle an error.
+		 *
+		 * @param String $handlerName Handler name.
+		 * @param Throwable $throwable The exception.
+		 */
+		public function onError(String $handlerName, Throwable $throwable) {
+			if ($this->errorHandler !== null) {
+				try {
+					call_user_func($this->errorHandler, $handlerName, $throwable);
+				} catch (Throwable $t) {
+					$this->defaultOnError($handlerName, $throwable);
+				}
+			} else {
+				$this->defaultOnError($handlerName, $throwable);
+			}
+		}
+
+		/**
+		 * Display exception information.
+		 *
+		 * @param String $handlerName Handler name.
+		 * @param Throwable $throwable The exception.
+		 */
+		private function defaultOnError(String $handlerName, Throwable $throwable) {
+			echo 'Throwable in ', $handlerName, ' handler.', "\n";
+			echo "\t", $throwable->getMessage(), "\n";
+			foreach (explode("\n", $throwable->getTraceAsString()) as $t) {
+				echo "\t\t", $t, "\n";
+			}
 		}
 
 		/**

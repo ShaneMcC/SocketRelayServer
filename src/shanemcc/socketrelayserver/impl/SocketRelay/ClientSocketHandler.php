@@ -10,41 +10,45 @@
 	 * SocketRelay ClientSocketHandler.
 	 */
 	class ClientSocketHandler extends BaseSocketHandler {
-		/** @var SocketRelayClient Client that owns us. */
-		private $client;
+		/** @var String Key for sending message. */
+		private $key;
+
+		/** @var Array Array of messages to send. */
+		private $messages;
+
+		/** @var ?Callable Callable to call when we are done. */
+		private $success;
 
 		/**
 		 * Create a new ClientSocketHandler
 		 *
 		 * @param SocketConnection $conn Client to handle
-		 * @param SocketRelayClient $client Client that owns us.
+		 * @param Array $messages Array of messages to send.
+		 * @param ?Callable $success Callable to call when we are done.
 		 */
-		public function __construct(SocketConnection $conn, SocketRelayClient $client) {
+		public function __construct(SocketConnection $conn, String $key, Array $messages, ?Callable $success = null) {
 			parent::__construct($conn);
-			$this->client = $client;
-		}
-
-		/**
-		 * Get our Client.
-		 *
-		 * @return SocketRelayClient Client that owns us.
-		 */
-		public function getClient(): SocketRelayClient {
-			return $this->client;
+			$this->key = $key;
+			$this->messages = $messages;
+			$this->success = $success;
 		}
 
 		/** @inheritDoc */
 		public function onConnect() {
 			$i = 0;
-			foreach ($this->client->getMessages() as $message) {
-				$this->getSocketConnection()->writeln($i++ . ' ' . $this->client->getKey() . ' ' . $message);
+			foreach ($this->messages as $message) {
+				if (is_string($message)) {
+					$this->getSocketConnection()->writeln($i++ . ' ' . $this->key . ' ' . $message);
+				} else if (is_callable($message)) {
+					call_user_func_array($message, [$this->getSocketConnection(), &$i, $this->key]);
+				}
 			}
-			$this->client->clearMessages();
-
-			$this->getSocketConnection()->writeln('-- ' . $this->client->getKey() . ' Q');
+			$this->getSocketConnection()->writeln('-- ' . $this->key . ' Q');
 			$this->getSocketConnection()->close();
 
-			$this->client->messagesSent();
+			if ($this->success != null) {
+				call_user_func($this->success);
+			}
 		}
 
 	}
