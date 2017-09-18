@@ -28,7 +28,7 @@
 
 			// Set up a timer to retry queued messages.
 			if ($this->client != null) {
-				$loop->schedule(2, true, function() {
+				$loop->schedule(60, true, function() {
 					if (count($this->queued) > 0) {
 						$this->client->addMessage([$this, 'sendMessagesToSocket'])->send();
 					}

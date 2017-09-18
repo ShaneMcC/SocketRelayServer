@@ -39,7 +39,7 @@
 		$lastHash = $hash;
 	};
 	// Periodically save the file.
-	$loop->schedule(5, true, $saveFailedMessages);
+	$loop->schedule(600, true, $saveFailedMessages);
 	// Forcefully save on shutdown.
 	register_shutdown_function($saveFailedMessages);
 
