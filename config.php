@@ -11,6 +11,7 @@
 	$config['reporter']['socketrelay']['host'] = getEnvOrDefault('REPORTER_SOCKETRELAY_HOST', 'somehost');
 	$config['reporter']['socketrelay']['port'] = getEnvOrDefault('REPORTER_SOCKETRELAY_PORT', '3302');
 	$config['reporter']['socketrelay']['key'] = getEnvOrDefault('REPORTER_SOCKETRELAY_KEY', 'SOMEKEY');
+	$config['reporter']['socketrelay']['suffix'] = getEnvOrDefault('REPORTER_SOCKETRELAY_SUFFIX', '');
 
 	$config['validKeys'] = [];
 	$config['validKeys']['347FF0B5-35BB-4212-A78B-67883B6F2A97'] = ['*'];

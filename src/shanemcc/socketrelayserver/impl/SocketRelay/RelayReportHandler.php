@@ -16,15 +16,21 @@
 		/** @var Array Array of queued messages. */
 		private $queued = [];
 
+		/** @var String Suffix to append to relayed messages. */
+		private $suffix = '';
+
 		/**
 		 * Create the ReportHandler.
 		 *
 		 * @param MessageLoop $loop Our message loop.
 		 * @param ?SocketRelayClient $client Client to relay reports to, or null
 		 *                                   to discard.
+		 * @param ?String $suffix Suffix to append to relayed messages.
 		 */
-		public function __construct(MessageLoop $loop, ?SocketRelayClient $client) {
+		public function __construct(MessageLoop $loop, ?SocketRelayClient $client, ?String $suffix) {
 			$this->client = $client;
+
+			if (!empty($suffix)) { $this->suffix = $suffix; }
 
 			// Set up a timer to retry queued messages.
 			if ($this->client != null) {
@@ -82,6 +88,10 @@
 		public function handle(BaseSocketHandler $handler, String $messageType, String $number, String $key, String $messageParams) {
 			if ($this->client != null) {
 				$message = $messageType . ' ' . $messageParams;
+				if (!empty($this->suffix)) {
+					$message .= ' ';
+					$message .= $this->suffix;
+				}
 
 				$this->client->addMessage($message)->send(function() use ($handler, $number, $messageType) {
 					if ($handler instanceof ServerSocketHandler) {
