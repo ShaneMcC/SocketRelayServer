@@ -58,6 +58,11 @@
 			$handler->sendResponse($number, $rType, '');
 			$handler->sendResponse($number, $rType, '----------');
 			$handler->sendResponse($number, $rType, '');
+			$handler->sendResponse($number, $rType, 'The service also accepts "Oblong"-style messages, in the format: <KEY> <CHANNEL> <MESSAGE>');
+			$handler->sendResponse($number, $rType, 'These are interpreted as: \'-- <KEY> CM <CHANNEL> <MESSAGE>\' and then processed as normal.');
+			$handler->sendResponse($number, $rType, '');
+			$handler->sendResponse($number, $rType, '----------');
+			$handler->sendResponse($number, $rType, '');
 			$handler->sendResponse($number, $rType, 'The socket will stay open until:');
 			$handler->sendResponse($number, $rType, '    1) It is closed by the client');
 			$handler->sendResponse($number, $rType, '    2) the \'Q\' command is used');
