@@ -26,7 +26,7 @@
 		private $errorHandler;
 
 		/**
-		 * Create a new Socket
+		 * Create a new Socket.
 		 *
 		 * @param MessageLoop $loop Our message loop
 		 * @param string  $host Host to use

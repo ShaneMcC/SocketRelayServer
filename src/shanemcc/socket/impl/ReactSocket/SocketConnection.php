@@ -5,7 +5,7 @@
 	use React\Socket\ConnectionInterface;
 
 	/**
-	 * React\Socket implementation of SocketConnection
+	 * React\Socket implementation of SocketConnection.
 	 */
 	class SocketConnection extends BaseSocketConnection {
 		/** @var ConnectionInterface Connection object. */

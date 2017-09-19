@@ -18,7 +18,7 @@
 		private static $handlers = [];
 
 		/**
-		 * Create a new ServerSocketHandler
+		 * Create a new ServerSocketHandler.
 		 *
 		 * @param SocketConnection $conn Client to handle
 		 * @param SocketRelayServer $server Server that owns us

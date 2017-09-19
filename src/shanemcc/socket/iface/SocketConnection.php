@@ -19,7 +19,7 @@
 		}
 
 		/**
-		 * Write a some data to the connection
+		 * Write a some data to the connection.
 		 *
 		 * @param  string ...$data Data to write
 		 */

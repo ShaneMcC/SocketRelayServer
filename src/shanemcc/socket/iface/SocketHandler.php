@@ -14,7 +14,7 @@
 		private $socketID = '';
 
 		/**
-		 * Create a new SocketHandler
+		 * Create a new SocketHandler.
 		 *
 		 * @param SocketConnection $conn Client to handle
 		 */
@@ -24,7 +24,7 @@
 		}
 
 		/**
-		 * Get the SocketConnection we are handling
+		 * Get the SocketConnection we are handling.
 		 *
 		 * @return SocketConnection Connection that we are handling
 		 */

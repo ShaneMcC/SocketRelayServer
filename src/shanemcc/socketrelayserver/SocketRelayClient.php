@@ -10,7 +10,7 @@
 	use shanemcc\socketrelayserver\impl\SocketRelay\ClientSocketHandler as SocketRelay_ClientSocketHandler;
 
 	/**
-	 * SocketRelayClient
+	 * SocketRelayClient.
 	 */
 	class SocketRelayClient {
 		/** @var string Host to connect to. */
@@ -32,7 +32,7 @@
 		private $messages = [];
 
 		/**
-		 * Create a new SocketRelayClient
+		 * Create a new SocketRelayClient.
 		 *
 		 * @param MessageLoop $loop MessageLoop we are being run from
 		 * @param string  $host Host to listen on
@@ -84,7 +84,7 @@
 		}
 
 		/**
-		 * Get our Client Socket
+		 * Get our Client Socket.
 		 *
 		 * @return Socket our Client Socket
 		 */
@@ -93,7 +93,7 @@
 		}
 
 		/**
-		 * Get our key
+		 * Get our key.
 		 *
 		 * @return string our key
 		 */

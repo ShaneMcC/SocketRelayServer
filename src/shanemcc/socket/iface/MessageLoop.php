@@ -18,12 +18,12 @@
 		public abstract function getSocket(String $host, int $port, int $timeout): Socket;
 
 		/**
-		 * Run this MessageLoop
+		 * Run this MessageLoop.
 		 */
 		public abstract function run();
 
 		/**
-		 * Stop this MessageLoop
+		 * Stop this MessageLoop.
 		 */
 		public abstract function stop();
 

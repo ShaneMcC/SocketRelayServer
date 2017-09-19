@@ -16,7 +16,7 @@
 	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\HELP;
 
 	/**
-	 * SocketRelayServer
+	 * SocketRelayServer.
 	 */
 	class SocketRelayServer {
 		/** @var string Host to listen on. */
@@ -44,7 +44,7 @@
 		private $validKeys;
 
 		/**
-		 * Create a new SocketRelayServer
+		 * Create a new SocketRelayServer.
 		 *
 		 * @param MessageLoop $loop MessageLoop we are being run from
 		 * @param string  $host Host to listen on
@@ -76,7 +76,7 @@
 
 
 		/**
-		 * Get our Server Socket
+		 * Get our Server Socket.
 		 *
 		 * @return Socket our Server Socket
 		 */

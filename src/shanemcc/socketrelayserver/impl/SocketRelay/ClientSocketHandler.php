@@ -18,7 +18,7 @@
 		private $success;
 
 		/**
-		 * Create a new ClientSocketHandler
+		 * Create a new ClientSocketHandler.
 		 *
 		 * @param SocketConnection $conn Client to handle
 		 * @param array $messages Array of messages to send

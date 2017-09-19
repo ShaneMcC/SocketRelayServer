@@ -9,7 +9,7 @@
 
 
 	/**
-	 * ReactPHP Implementation of MessageLoop
+	 * ReactPHP Implementation of MessageLoop.
 	 *
 	 * There should be only 1 instance of this.
 	 */

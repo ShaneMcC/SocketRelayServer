@@ -14,7 +14,7 @@
 		private $server;
 
 		/**
-		 * Create a new ServerSocketHandlerFactory
+		 * Create a new ServerSocketHandlerFactory.
 		 *
 		 * @param SocketRelayServer $server Server that owns us
 		 */
