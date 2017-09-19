@@ -42,7 +42,7 @@
 			if ($repeat) {
 				$this->loop->addPeriodicTimer($time, $function);
 			} else if ($time == 0) {
-				$this->loop->addTimer($function);
+				$this->loop->nextTick($function);
 			} else {
 				$this->loop->addTimer($time, $function);
 			}

@@ -28,7 +28,7 @@
 		 *
 		 * @return SocketConnection Connection that we are handling
 		 */
-		protected function getSocketConnection(): SocketConnection {
+		public function getSocketConnection(): SocketConnection {
 			return $this->conn;
 		}
 

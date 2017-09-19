@@ -31,7 +31,7 @@
 		/** @var bool Are we running in verbose mode? */
 		private $verbose;
 
-		/** @var Socket Socket we are using. */
+		/** @var BaseSocket Socket we are using. */
 		private $server;
 
 		/** @var MessageLoop MessageLoop that we are being run from. */
@@ -78,7 +78,7 @@
 		/**
 		 * Get our Server Socket.
 		 *
-		 * @return Socket our Server Socket
+		 * @return BaseSocket our Server Socket
 		 */
 		public function getSocket(): BaseSocket {
 			return $this->server;

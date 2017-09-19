@@ -43,7 +43,7 @@
 		/**
 		 * Do we have a handler for the given message type?
 		 *
-		 * @param $messageType Message type to handle
+		 * @param String $messageType Message type to handle
 		 * @return bool True iif we have a handler
 		 */
 		public static function hasMessageHandler(String $messageType): bool {
@@ -57,13 +57,13 @@
 		 * callable.
 		 *
 		 * @param string $messageType Message type to handle
-		 * @return array with 'callable' key containing the function to call
+		 * @return array Array with 'callable' key containing the function to call
 		 */
-		public static function getMessageHandler(String $messageType): Array {
+		public static function getMessageHandler(String $messageType): array {
 			if (self::hasMessageHandler($messageType)) {
 				return self::$handlers[strtoupper($messageType)];
 			} else {
-				return ['description' => 'Invalid Message Type', 'callable' => [$this, 'invalidHandler']];
+				return ['description' => 'Invalid Message Type', 'callable' => [__CLASS__, 'invalidHandler']];
 			}
 		}
 
@@ -72,7 +72,7 @@
 		 *
 		 * @return array Array of handlers
 		 */
-		public static function getMessageHandlers(): Array {
+		public static function getMessageHandlers(): array {
 			return self::$handlers;
 		}
 
@@ -91,22 +91,23 @@
 			if (self::hasMessageHandler($messageType)) {
 				$handler = self::getMessageHandler($messageType);
 				if (!call_user_func($handler['callable'], $this, $number, $key, $messageParams)) {
-					$this->invalidHandler($number, $key, '');
+                    self::invalidHandler($this, $number, $key, '');
 				}
 			} else {
-				$this->invalidHandler($number, $key, '');
+				self::invalidHandler($this, $number, $key, '');
 			}
 		}
 
 		/**
-		 * Repond to the socket about an invalid handler.
+		 * Respond to the socket about an invalid handler.
 		 *
+         * @param ServerSocketHandler $handler Socket Handler
 		 * @param string $number 'Number' from client
 		 * @param string $key Key that was given
 		 * @param string $messageParams Params that were given
 		 */
-		public function invalidHandler(String $number, String $key, String $messageParams) {
-			$this->sendResponse($number, 'Err', 'Access denied, Invalid Handler or Other Error');
+		public static function invalidHandler(ServerSocketHandler $handler, String $number, String $key, String $messageParams) {
+            $handler->sendResponse($number, 'Err', 'Access denied, Invalid Handler or Other Error');
 		}
 
 		/**
@@ -155,7 +156,7 @@
 
 						$this->runMessageHandler($messageType, $number, $key, $messageParams);
 					} else {
-						$this->invalidHandler($number, $key, '');
+                        self::invalidHandler($this, $number, $key, '');
 					}
 				} else if ($this->isValidKey($number) && preg_match('/^#/', $key) && isset($parts[2])) {
 					// Support for "OBLONG"-Style reports.

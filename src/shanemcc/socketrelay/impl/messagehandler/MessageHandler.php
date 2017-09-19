@@ -26,7 +26,7 @@
 		/**
 		 * Handle this message.
 		 *
-		 * @param SocketHandler $handler SocketHandler that we are handling for
+		 * @param ServerSocketHandler $handler SocketHandler that we are handling for
 		 * @param string $number 'Number' from client
 		 * @param string $key Key that was given
 		 * @param string $messageParams Params that were given

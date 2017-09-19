@@ -7,7 +7,6 @@
 	use React\Socket\ConnectionInterface;
 
 	use shanemcc\socket\iface\Socket as BaseSocket;
-	use shanemcc\socket\impl\ReactSocket\SocketConnection;
 
 	use \Throwable;
 	use \Exception;

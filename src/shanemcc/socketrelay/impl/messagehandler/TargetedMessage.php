@@ -4,7 +4,7 @@
 	use shanemcc\socketrelay\iface\ReportHandler;
 	use shanemcc\socketrelay\impl\ServerSocketHandler;
 
-	abstract class TargettedMessage extends MessageHandler {
+	abstract class TargetedMessage extends MessageHandler {
 
 		/** {@inheritdoc} */
 		public function handleMessage(ServerSocketHandler $handler, String $number, String $key, String $messageParams): bool {

@@ -23,9 +23,9 @@
 		 * Create the ReportHandler.
 		 *
 		 * @param MessageLoop $loop Our message loop
-		 * @param ?SocketRelayClient $client Client to relay reports to, or null
+		 * @param SocketRelayClient $client Client to relay reports to, or null
 		 *                                   to discard
-		 * @param ?String $suffix Suffix to append to relayed messages
+		 * @param String $suffix Suffix to append to relayed messages
 		 */
 		public function __construct(MessageLoop $loop, ?SocketRelayClient $client, ?String $suffix) {
 			$this->client = $client;
@@ -63,7 +63,7 @@
 		 *
 		 * @return array Array of queued messages
 		 */
-		public function getQueued(): Array {
+		public function getQueued(): array {
 			return $this->queued;
 		}
 
@@ -106,7 +106,9 @@
 				});
 
 			} else {
-				$handler->sendResponse($number, $messageType, 'Relaying disabled.');
+                if ($handler instanceof ServerSocketHandler) {
+                    $handler->sendResponse($number, $messageType, 'Relaying disabled.');
+                }
 			}
 		}
 	}

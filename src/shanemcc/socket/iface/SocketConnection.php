@@ -7,22 +7,22 @@
 	 * This allows us to read/write data to the socket.
 	 */
 	abstract class SocketConnection {
-		/**
-		 * Write some data to the connection and automatically add a "\n" to
-		 * the end.
-		 *
-		 * @param  string ...$data Data to write
-		 */
+        /**
+         * Write some data to the connection and automatically add a "\n" to
+         * the end.
+         *
+         * @param string|String[] ...$data
+         */
 		public function writeln(String ...$data) {
 			$this->write(...$data);
 			$this->write("\n");
 		}
 
-		/**
-		 * Write a some data to the connection.
-		 *
-		 * @param  string ...$data Data to write
-		 */
+        /**
+         * Write a some data to the connection.
+         *
+         * @param string|String[] ...$data
+         */
 		public abstract function write(String ...$data);
 
 		/**

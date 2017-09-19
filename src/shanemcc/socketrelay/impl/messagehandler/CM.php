@@ -1,7 +1,7 @@
 <?php
 	namespace shanemcc\socketrelay\impl\messagehandler;
 
-	class CM extends TargettedMessage {
+	class CM extends TargetedMessage {
 		/** {@inheritdoc}. */
 		public function getMessageType(): String {
 			return 'CM';
