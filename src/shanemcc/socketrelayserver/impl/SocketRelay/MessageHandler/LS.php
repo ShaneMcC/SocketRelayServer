@@ -1,6 +1,6 @@
 <?php
-
 	namespace shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler;
+
 	use shanemcc\socketrelayserver\impl\SocketRelay\ServerSocketHandler;
 
 	class LS extends MessageHandler {

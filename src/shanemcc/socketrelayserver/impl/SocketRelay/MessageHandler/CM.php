@@ -1,5 +1,4 @@
 <?php
-
 	namespace shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler;
 
 	class CM extends TargettedMessage {

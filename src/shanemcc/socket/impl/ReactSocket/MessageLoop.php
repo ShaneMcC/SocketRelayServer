@@ -1,5 +1,6 @@
 <?php
 	namespace shanemcc\socket\impl\ReactSocket;
+
 	use shanemcc\socket\iface\MessageLoop as BaseMessageLoop;
 	use shanemcc\socket\iface\Socket as BaseSocket;
 
