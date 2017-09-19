@@ -19,7 +19,7 @@
 	 * SocketRelayServer
 	 */
 	class SocketRelayServer {
-		/** @var String Host to listen on. */
+		/** @var string Host to listen on. */
 		private $host;
 
 		/** @var int Port to listen on. */
@@ -40,16 +40,16 @@
 		/** @var ReportHandler ReportHandler. */
 		private $reportHandler;
 
-		/** @var Array Array of valid keys. 'Key' => [Allowed Functions] */
+		/** @var array Array of valid keys. 'Key' => [Allowed Functions] */
 		private $validKeys;
 
 		/**
 		 * Create a new SocketRelayServer
 		 *
-		 * @param MessageLoop $loop MessageLoop we are being run from.
-		 * @param String  $host Host to listen on.
-		 * @param int $port Port to listen on.
-		 * @param int $timeout Timeout for inactive connections.
+		 * @param MessageLoop $loop MessageLoop we are being run from
+		 * @param string  $host Host to listen on
+		 * @param int $port Port to listen on
+		 * @param int $timeout Timeout for inactive connections
 		 */
 		public function __construct(MessageLoop $loop, String $host, int $port, int $timeout) {
 			$this->messageLoop = $loop;
@@ -95,7 +95,7 @@
 		/**
 		 * Set verbose mode.
 		 *
-		 * @param Bool $verbose New value for verbose mode.
+		 * @param bool $verbose New value for verbose mode
 		 */
 		public function setVerbose(bool $verbose) {
 			$this->verbose = $verbose;
@@ -104,7 +104,7 @@
 		/**
 		 * Are we running in verbose mode?
 		 *
-		 * @return bool True iif verbose.
+		 * @return bool True iif verbose
 		 */
 		public function isVerbose(): bool {
 			return $this->verbose;
@@ -113,7 +113,7 @@
 		/**
 		 * Set our valid keys.
 		 *
-		 * @param Array $validKeys Array of valid keys.
+		 * @param array $validKeys Array of valid keys
 		 */
 		public function setValidKeys(Array $validKeys) {
 			$this->validKeys = $validKeys;
@@ -122,7 +122,7 @@
 		/**
 		 * Get our valid keys.
 		 *
-		 * @return Array Array of valid keys.
+		 * @return array Array of valid keys
 		 */
 		public function getValidKeys(): Array {
 			return $this->validKeys;
@@ -131,7 +131,7 @@
 		/**
 		 * Set our ReportHandler.
 		 *
-		 * @param ReportHandler $reportHandler Handler for reports.
+		 * @param ReportHandler $reportHandler Handler for reports
 		 */
 		public function setReportHandler(ReportHandler $reportHandler) {
 			$this->reportHandler = $reportHandler;
@@ -140,7 +140,7 @@
 		/**
 		 * Get our ReportHandler.
 		 *
-		 * @return ReportHandler Handler for reports.
+		 * @return ReportHandler Handler for reports
 		 */
 		public function getReportHandler(): ReportHandler {
 			return $this->reportHandler;

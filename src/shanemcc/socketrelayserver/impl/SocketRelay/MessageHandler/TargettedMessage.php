@@ -6,7 +6,7 @@
 
 	abstract class TargettedMessage extends MessageHandler {
 
-		/** @inheritDoc */
+		/** {@inheritdoc} */
 		public function handleMessage(ServerSocketHandler $handler, String $number, String $key, String $messageParams): bool {
 			$messageType = $this->getMessageType();
 			$bits = explode(' ', $messageParams, 2);

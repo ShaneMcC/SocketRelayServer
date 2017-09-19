@@ -14,14 +14,14 @@
 		/** @var SocketRelayServer Server that owns us. */
 		private $server;
 
-		/** @var Array Array of handlers for message types. */
+		/** @var array Array of handlers for message types. */
 		private static $handlers = [];
 
 		/**
 		 * Create a new ServerSocketHandler
 		 *
 		 * @param SocketConnection $conn Client to handle
-		 * @param SocketRelayServer $server Server that owns us.
+		 * @param SocketRelayServer $server Server that owns us
 		 */
 		public function __construct(SocketConnection $conn, SocketRelayServer $server) {
 			parent::__construct($conn);
@@ -31,7 +31,7 @@
 		/**
 		 * Add a new handler.
 		 *
-		 * @param MessageHandler $handler Handler.
+		 * @param MessageHandler $handler Handler
 		 */
 		public static function addMessageHandler(MessageHandler $handler) {
 			$messageType = $handler->getMessageType();
@@ -43,8 +43,8 @@
 		/**
 		 * Do we have a handler for the given message type?
 		 *
-		 * @param $messageType Message type to handle.
-		 * @return bool True iif we have a handler.
+		 * @param $messageType Message type to handle
+		 * @return bool True iif we have a handler
 		 */
 		public static function hasMessageHandler(String $messageType): bool {
 			return array_key_exists(strtoupper($messageType), self::$handlers);
@@ -56,8 +56,8 @@
 		 * If we don't have a handler then we will return the invalidHandler
 		 * callable.
 		 *
-		 * @param String $messageType Message type to handle.
-		 * @return Array with 'callable' key containing the function to call.
+		 * @param string $messageType Message type to handle
+		 * @return array with 'callable' key containing the function to call
 		 */
 		public static function getMessageHandler(String $messageType): Array {
 			if (self::hasMessageHandler($messageType)) {
@@ -70,7 +70,7 @@
 		/**
 		 * Get all our handlers.
 		 *
-		 * @return Array Array of handlers.
+		 * @return array Array of handlers
 		 */
 		public static function getMessageHandlers(): Array {
 			return self::$handlers;
@@ -82,10 +82,10 @@
 		 * If we don't have a handler then we will run the invalidHandler
 		 * callable.
 		 *
-		 * @param String $messageType Message type to handle.
-		 * @param String $number 'Number' from client
-		 * @param String $key Key that was given.
-		 * @param String $messageParams Params that were given
+		 * @param string $messageType Message type to handle
+		 * @param string $number 'Number' from client
+		 * @param string $key Key that was given
+		 * @param string $messageParams Params that were given
 		 */
 		public function runMessageHandler(String $messageType, String $number, String $key, String $messageParams) {
 			if (self::hasMessageHandler($messageType)) {
@@ -101,9 +101,9 @@
 		/**
 		 * Repond to the socket about an invalid handler.
 		 *
-		 * @param String $number 'Number' from client
-		 * @param String $key Key that was given.
-		 * @param String $messageParams Params that were given
+		 * @param string $number 'Number' from client
+		 * @param string $key Key that was given
+		 * @param string $messageParams Params that were given
 		 */
 		public function invalidHandler(String $number, String $key, String $messageParams) {
 			$this->sendResponse($number, 'Err', 'Access denied, Invalid Handler or Other Error');
@@ -112,25 +112,25 @@
 		/**
 		 * Get our server.
 		 *
-		 * @return SocketRelayServer Server that owns us.
+		 * @return SocketRelayServer Server that owns us
 		 */
 		public function getServer(): SocketRelayServer {
 			return $this->server;
 		}
 
-		/** @inheritDoc */
+		/** {@inheritdoc} */
 		public function onConnect() {
 			$this->sendResponse("--", "--", "Welcome, you are connected to SocketRelayServer - Use '??' for information about this service.");
 			if ($this->server->isVerbose()) { echo '[', $this->getSocketID(), '] Client Connected. ', "\n"; }
 		}
 
-		/** @inheritDoc */
+		/** {@inheritdoc} */
 		public function onConnectRefused() {
 			$this->sendResponse('--', 'Sck', 'Closing Connection.');
 			if ($this->server->isVerbose()) { echo '[', $this->getSocketID(), '] Client Connection refused. ', "\n"; }
 		}
 
-		/** @inheritDoc */
+		/** {@inheritdoc} */
 		public function onData(String $data) {
 			if (empty($data)) { return; }
 			if ($this->server->isVerbose()) { echo '[', $this->getSocketID(), '] Data: ', $data, "\n"; }
@@ -178,17 +178,17 @@
 			}
 		}
 
-		/** @inheritDoc */
+		/** {@inheritdoc} */
 		public function onClose() {
 			if ($this->server->isVerbose()) { echo '[', $this->getSocketID(), '] Socket Closed. ', "\n"; }
 		}
 
-		/** @inheritDoc */
+		/** {@inheritdoc} */
 		public function closeSocket(String $reason) {
 			$this->sendResponse('--', 'Sck', 'Closing Connection - ' . $reason);
 		}
 
-		/** @inheritDoc */
+		/** {@inheritdoc} */
 		public function onTimeout(): bool {
 			$this->sendResponse('--', 'Sck', 'Closing Connection - Timeout');
 			return true;
@@ -197,7 +197,7 @@
 		/**
 		 * Close the connection.
 		 *
-		 * @param  String $number Optional 'number' from client that caused this.
+		 * @param  string $number Optional 'number' from client that caused this
 		 */
 		public function closeConnection(String $number = '--') {
 			$this->sendResponse($number, 'Sck', 'Closing Connection');
@@ -207,9 +207,9 @@
 		/**
 		 * Send a response to the client.
 		 *
-		 * @param String $number 'Number' from client
-		 * @param String $type Response type.
-		 * @param String $message Message to send.
+		 * @param string $number 'Number' from client
+		 * @param string $type Response type
+		 * @param string $message Message to send
 		 */
 		public function sendResponse(String $number, String $type, String $message) {
 			$line = sprintf('[%s %s] %s', $number, $type, $message);
@@ -220,8 +220,8 @@
 		/**
 		 * Check if the given key is valid.
 		 *
-		 * @param String $key Key to check.
-		 * @return bool True iif key is valid.
+		 * @param string $key Key to check
+		 * @return bool True iif key is valid
 		 */
 		public function isValidKey(String $key): bool {
 			$validKeys = $this->server->getValidKeys();
@@ -231,9 +231,9 @@
 		/**
 		 * Check if the given key is valid for a given message type.
 		 *
-		 * @param String $key Key to check.
-		 * @param String $messageType MessageType to check.
-		 * @return bool True iif key is valid for the given message type.
+		 * @param string $key Key to check
+		 * @param string $messageType MessageType to check
+		 * @return bool True iif key is valid for the given message type
 		 */
 		public function canAccess(String $key, String $messageType): bool {
 			if ($this->isValidKey($key)) {
@@ -252,9 +252,9 @@
 		/**
 		 * Check if the given target is valid for the given key and message type.
 		 *
-		 * @param String $key Key to check.
-		 * @param String $messageType MessageType to check.
-		 * @param String $target Target to check.
+		 * @param string $key Key to check
+		 * @param string $messageType MessageType to check
+		 * @param string $target Target to check
 		 * @return bool True iif key is valid for the given message type + target
 		 */
 		public function isValidTarget(String $key, String $messageType, String $target): bool {

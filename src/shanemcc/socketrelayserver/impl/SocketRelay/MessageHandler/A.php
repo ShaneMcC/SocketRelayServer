@@ -5,17 +5,17 @@
 	use shanemcc\socketrelayserver\impl\SocketRelay\ServerSocketHandler;
 
 	class A extends MessageHandler {
-		/** @inheritDoc. */
+		/** {@inheritdoc}. */
 		public function getMessageType(): String {
 			return 'A';
 		}
 
-		/** @inheritDoc. */
+		/** {@inheritdoc}. */
 		public function getDescription(): String {
 			return 'List known message types';
 		}
 
-		/** @inheritDoc */
+		/** {@inheritdoc} */
 		public function handleMessage(ServerSocketHandler $handler, String $number, String $key, String $messageParams): bool {
 			$messageBits = explode(' ', $messageParams);
 

@@ -15,14 +15,14 @@
 		/**
 		 * Get current queued messages.
 		 *
-		 * @return Array Array of queued messages.
+		 * @return array Array of queued messages
 		 */
 		public function getQueued(): Array;
 
 		/**
 		 * Add a new queued message.
 		 *
-		 * @param String|Array $message Message to queue.
+		 * @param string|array $message Message to queue
 		 */
 		public function queueMessage($message);
 	}

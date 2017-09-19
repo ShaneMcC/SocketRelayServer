@@ -7,7 +7,7 @@
 	 * Base Socket.
 	 */
 	abstract class Socket {
-		/** @var String Host to use. */
+		/** @var string Host to use. */
 		private $host;
 
 		/** @var int Port to use. */
@@ -22,16 +22,16 @@
 		/** @var MessageLoop Our MessageLoop */
 		private $loop;
 
-		/** @var Callable Error Handler */
+		/** @var callable Error Handler */
 		private $errorHandler;
 
 		/**
 		 * Create a new Socket
 		 *
-		 * @param MessageLoop $loop Our message loop.
-		 * @param String  $host Host to use.
-		 * @param int $port Port to use.
-		 * @param int $timeout How long to allow client sockets to be idle.
+		 * @param MessageLoop $loop Our message loop
+		 * @param string  $host Host to use
+		 * @param int $port Port to use
+		 * @param int $timeout How long to allow client sockets to be idle
 		 */
 		public function __construct(MessageLoop $loop, String $host, int $port, int $timeout) {
 			$this->loop = $loop;
@@ -43,7 +43,7 @@
 		/**
 		 * Get our error Handler.
 		 *
-		 * @return Callable Our error handler.
+		 * @return callable Our error handler
 		 */
 		public function getErrorHandler(): Callable {
 			return $this->errorHandler;
@@ -52,7 +52,7 @@
 		/**
 		 * Set our error Handler.
 		 *
-		 * @param Callable $handler New error handler.
+		 * @param callable $handler New error handler
 		 */
 		public function setErrorHandler(Callable $handler) {
 			$this->errorHandler = $handler;
@@ -61,8 +61,8 @@
 		/**
 		 * Handle an error.
 		 *
-		 * @param String $handlerName Handler name.
-		 * @param Throwable $throwable The exception.
+		 * @param string $handlerName Handler name
+		 * @param Throwable $throwable The exception
 		 */
 		public function onError(String $handlerName, Throwable $throwable) {
 			if ($this->errorHandler !== null) {
@@ -79,8 +79,8 @@
 		/**
 		 * Display exception information.
 		 *
-		 * @param String $handlerName Handler name.
-		 * @param Throwable $throwable The exception.
+		 * @param string $handlerName Handler name
+		 * @param Throwable $throwable The exception
 		 */
 		private function defaultOnError(String $handlerName, Throwable $throwable) {
 			echo 'Throwable in ', $handlerName, ' handler.', "\n";
@@ -93,7 +93,7 @@
 		/**
 		 * Get our message loop.
 		 *
-		 * @return MessageLoop Our message loop.
+		 * @return MessageLoop Our message loop
 		 */
 		public function getMessageLoop(): MessageLoop {
 			return $this->loop;
@@ -102,7 +102,7 @@
 		/**
 		 * Get our host.
 		 *
-		 * @return String host
+		 * @return string host
 		 */
 		public function getHost(): String {
 			return $this->host;
@@ -120,7 +120,7 @@
 		/**
 		 * Get our timeout value.
 		 *
-		 * @return int timeout value.
+		 * @return int timeout value
 		 */
 		public function getTimeout(): int {
 			return $this->timeout;
@@ -129,7 +129,7 @@
 		/**
 		 * Set our SocketHandlerFactory.
 		 *
-		 * @param SocketHandlerFactory $factory Factory to create SocketHandlers.
+		 * @param SocketHandlerFactory $factory Factory to create SocketHandlers
 		 */
 		public function setSocketHandlerFactory(SocketHandlerFactory $factory) {
 			$this->factory = $factory;
@@ -138,7 +138,7 @@
 		/**
 		 * Get our SocketHandlerFactory.
 		 *
-		 * @return SocketHandlerFactory Factory that creates SocketHandlers.
+		 * @return SocketHandlerFactory Factory that creates SocketHandlers
 		 */
 		public function getSocketHandlerFactory(): SocketHandlerFactory {
 			return $this->factory;
@@ -157,7 +157,7 @@
 		/**
 		 * Close the server and all open connections.
 		 *
-		 * @param String $message Reason for closing.
+		 * @param string $message Reason for closing
 		 */
 		public abstract function close(String $message = 'Server closing.');
 	}

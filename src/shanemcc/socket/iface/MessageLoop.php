@@ -10,10 +10,10 @@
 		/**
 		 * Get a Socket that uses this message loop.
 		 *
-		 * @param String  $host Host to listen on.
-		 * @param int $port Port to listen on.
-		 * @param int $timeout How long to allow client sockets to be idle.
-		 * @return Socket A Socket.
+		 * @param string  $host Host to listen on
+		 * @param int $port Port to listen on
+		 * @param int $timeout How long to allow client sockets to be idle
+		 * @return Socket A Socket
 		 */
 		public abstract function getSocket(String $host, int $port, int $timeout): Socket;
 
@@ -35,7 +35,7 @@
 		 *
 		 * @param float $time How far in the future (seconds)
 		 * @param bool $repeat Should this function be run repeatedly
-		 * @param Callable $function Function to run,
+		 * @param callable $function Function to run,
 		 */
 		public abstract function schedule(float $time, bool $repeat, Callable $function);
 	}

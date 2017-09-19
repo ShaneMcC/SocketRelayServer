@@ -13,7 +13,7 @@
 	 * SocketRelayClient
 	 */
 	class SocketRelayClient {
-		/** @var String Host to connect to. */
+		/** @var string Host to connect to. */
 		private $host;
 
 		/** @var int Port to connect to. */
@@ -22,23 +22,23 @@
 		/** @var int Timeout for inactive connectons. */
 		private $timeout;
 
-		/** @var String Our key */
+		/** @var string Our key */
 		private $key;
 
 		/** @var MessageLoop MessageLoop that we are being run from. */
 		private $messageLoop;
 
-		/** @var Array Messages pending sending */
+		/** @var array Messages pending sending */
 		private $messages = [];
 
 		/**
 		 * Create a new SocketRelayClient
 		 *
-		 * @param MessageLoop $loop MessageLoop we are being run from.
-		 * @param String  $host Host to listen on.
-		 * @param int $port Port to listen on.
-		 * @param int $timeout Timeout for inactive connections.
-		 * @param String $key Our key
+		 * @param MessageLoop $loop MessageLoop we are being run from
+		 * @param string  $host Host to listen on
+		 * @param int $port Port to listen on
+		 * @param int $timeout Timeout for inactive connections
+		 * @param string $key Our key
 		 */
 		public function __construct(MessageLoop $loop, String $host, int $port, int $timeout, String $key) {
 			$this->messageLoop = $loop;
@@ -51,10 +51,10 @@
 		/**
 		 * Send all the messages.
 		 *
-		 * @param Callable $success Function to run once complete.
-		 * @param Callable $error Function to run if there is an error.
+		 * @param callable $success Function to run once complete
+		 * @param callable $error Function to run if there is an error
 		 * @param Array/String $messages Optional array or string of additional
-		 *                               message(s) to send.
+		 *                               message(s) to send
 		 */
 		public function send(?Callable $success = null, ?Callable $error = null) {
 			$client = $this->messageLoop->getSocket($this->host, $this->port, $this->timeout);
@@ -95,7 +95,7 @@
 		/**
 		 * Get our key
 		 *
-		 * @return String our key
+		 * @return string our key
 		 */
 		public function getKey(): String {
 			return $this->key;
@@ -104,7 +104,7 @@
 		/**
 		 * Get our pending messages.
 		 *
-		 * @return Array our pending messages.
+		 * @return array our pending messages
 		 */
 		public function getMessages(): Array {
 			return $this->messages;
@@ -120,8 +120,8 @@
 		/**
 		 * Add a new pending message.
 		 *
-		 * @param String|Array $message Message to send.
-		 * @return SocketRelayClient $this for chaining.
+		 * @param string|array $message Message to send
+		 * @return SocketRelayClient $this for chaining
 		 */
 		public function addMessage($message): SocketRelayClient {
 			if (is_callable($message)) {

@@ -4,17 +4,17 @@
 	use shanemcc\socketrelayserver\impl\SocketRelay\ServerSocketHandler;
 
 	class Q extends MessageHandler {
-		/** @inheritDoc. */
+		/** {@inheritdoc}. */
 		public function getMessageType(): String {
 			return 'Q';
 		}
 
-		/** @inheritDoc. */
+		/** {@inheritdoc}. */
 		public function getDescription(): String {
 			return 'Close the connection';
 		}
 
-		/** @inheritDoc */
+		/** {@inheritdoc} */
 		public function handleMessage(ServerSocketHandler $handler, String $number, String $key, String $messageParams): bool {
 			// Don't duplicate the close message if the user sends "-- <KEY> Q"
 			if ($number != '--') {

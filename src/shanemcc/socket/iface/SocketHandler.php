@@ -10,7 +10,7 @@
 		/** @var SocketConnection Our client */
 		private $conn;
 
-		/** @var String Our socketID */
+		/** @var string Our socketID */
 		private $socketID = '';
 
 		/**
@@ -45,7 +45,7 @@
 		/**
 		 * Called when we recieve data from the socket.
 		 *
-		 * @var String $data Data from the socket.
+		 * @var string Data from the socket
 		 */
 		public function onData(String $data) { }
 
@@ -57,7 +57,7 @@
 		/**
 		 * Called when we are closing a socket. .
 		 *
-		 * @param String $reason Reason the socket is closing.
+		 * @param string $reason Reason the socket is closing
 		 */
 		public function closeSocket(String $reason) { }
 
@@ -65,7 +65,7 @@
 		 * Called when the socket timeout is reached.
 		 *
 		 * @return bool True if we should close the socket, or false to ignore
-		 *         the timeout.
+		 *         the timeout
 		 */
 		public function onTimeout(): bool {
 			return true;
@@ -74,7 +74,7 @@
 		/**
 		 * Get the socket ID.
 		 *
-		 * @return String SocketID.
+		 * @return string SocketID
 		 */
 		public function getSocketID() {
 			return $this->socketID;

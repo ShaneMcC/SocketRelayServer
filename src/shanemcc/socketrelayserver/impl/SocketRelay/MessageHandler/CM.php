@@ -2,12 +2,12 @@
 	namespace shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler;
 
 	class CM extends TargettedMessage {
-		/** @inheritDoc. */
+		/** {@inheritdoc}. */
 		public function getMessageType(): String {
 			return 'CM';
 		}
 
-		/** @inheritDoc. */
+		/** {@inheritdoc}. */
 		public function getDescription(): String {
 			return 'Send a message to a channel';
 		}

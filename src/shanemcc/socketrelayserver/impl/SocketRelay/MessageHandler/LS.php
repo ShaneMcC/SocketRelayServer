@@ -4,17 +4,17 @@
 	use shanemcc\socketrelayserver\impl\SocketRelay\ServerSocketHandler;
 
 	class LS extends MessageHandler {
-		/** @inheritDoc. */
+		/** {@inheritdoc}. */
 		public function getMessageType(): String {
 			return 'LS';
 		}
 
-		/** @inheritDoc. */
+		/** {@inheritdoc}. */
 		public function getDescription(): String {
 			return 'List known message types';
 		}
 
-		/** @inheritDoc */
+		/** {@inheritdoc} */
 		public function handleMessage(ServerSocketHandler $handler, String $number, String $key, String $messageParams): bool {
 			$handler->sendResponse($number, 'LS', '# Name -- Desc');
 			foreach (ServerSocketHandler::getMessageHandlers() as $messageType => $messageHandler) {

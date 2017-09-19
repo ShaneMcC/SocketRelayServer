@@ -11,7 +11,7 @@
 		 * Write some data to the connection and automatically add a "\n" to
 		 * the end.
 		 *
-		 * @param  String ...$data Data to write
+		 * @param  string ...$data Data to write
 		 */
 		public function writeln(String ...$data) {
 			$this->write(...$data);
@@ -21,21 +21,21 @@
 		/**
 		 * Write a some data to the connection
 		 *
-		 * @param  String ...$data Data to write
+		 * @param  string ...$data Data to write
 		 */
 		public abstract function write(String ...$data);
 
 		/**
 		 * Get remote address.
 		 *
-		 * @return String Remote socket address.
+		 * @return string Remote socket address
 		 */
 		public abstract function getRemoteAddress(): ?String;
 
 		/**
 		 * Get local address.
 		 *
-		 * @return String Local socket address.
+		 * @return string Local socket address
 		 */
 		public abstract function getLocalAddress(): ?String;
 

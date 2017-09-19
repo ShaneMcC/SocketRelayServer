@@ -17,27 +17,27 @@
 		/** @var LoopInterface Our LoopInterface */
 		private $loop;
 
-		/** @inheritDoc */
+		/** {@inheritdoc} */
 		public function __construct() {
 			$this->loop = EventLoopFactory::create();
 		}
 
-		/** @inheritDoc */
+		/** {@inheritdoc} */
 		public function getSocket(String $host, int $port, int $timeout): BaseSocket {
 			return new Socket($this, $host, $port, $timeout);
 		}
 
-		/** @inheritDoc */
+		/** {@inheritdoc} */
 		public function run() {
 			$this->loop->run();
 		}
 
-		/** @inheritDoc */
+		/** {@inheritdoc} */
 		public function stop() {
 			$this->loop->stop();
 		}
 
-		/** @inheritDoc */
+		/** {@inheritdoc} */
 		public function schedule(float $time, bool $repeat, Callable $function) {
 			if ($repeat) {
 				$this->loop->addPeriodicTimer($time, $function);
@@ -51,7 +51,7 @@
 		/**
 		 * Get the underlying ReactPHP LoopInterface.
 		 *
-		 * @return LoopInterface ReactPHP LoopInterface.
+		 * @return LoopInterface ReactPHP LoopInterface
 		 */
 		public function getLoopInterface(): LoopInterface {
 			return $this->loop;

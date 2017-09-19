@@ -13,19 +13,19 @@
 		/** @var SocketRelayClient to relay reports to. */
 		private $client;
 
-		/** @var Array Array of queued messages. */
+		/** @var array Array of queued messages. */
 		private $queued = [];
 
-		/** @var String Suffix to append to relayed messages. */
+		/** @var string Suffix to append to relayed messages. */
 		private $suffix = '';
 
 		/**
 		 * Create the ReportHandler.
 		 *
-		 * @param MessageLoop $loop Our message loop.
+		 * @param MessageLoop $loop Our message loop
 		 * @param ?SocketRelayClient $client Client to relay reports to, or null
-		 *                                   to discard.
-		 * @param ?String $suffix Suffix to append to relayed messages.
+		 *                                   to discard
+		 * @param ?String $suffix Suffix to append to relayed messages
 		 */
 		public function __construct(MessageLoop $loop, ?SocketRelayClient $client, ?String $suffix) {
 			$this->client = $client;
@@ -45,9 +45,9 @@
 		/**
 		 * Function to send messages to socket.
 		 *
-		 * @param SocketConnection $conn Connection to send to.
-		 * @param int &$i Current line number.
-		 * @param String $key Client Key.
+		 * @param SocketConnection $conn Connection to send to
+		 * @param int &$i Current line number
+		 * @param string $key Client Key
 		 */
 		public function sendMessagesToSocket(SocketConnection $conn, int &$i, String $key) {
 			$messages = $this->queued;
@@ -61,7 +61,7 @@
 		/**
 		 * Get current queued messages.
 		 *
-		 * @return Array Array of queued messages.
+		 * @return array Array of queued messages
 		 */
 		public function getQueued(): Array {
 			return $this->queued;
@@ -70,7 +70,7 @@
 		/**
 		 * Add a new queued message.
 		 *
-		 * @param String|Array $message Message to queue.
+		 * @param string|array $message Message to queue
 		 */
 		public function queueMessage($message) {
 			if (!is_array($message) && is_string($message)) {
@@ -84,7 +84,7 @@
 			}
 		}
 
-		/** @inheritDoc */
+		/** {@inheritdoc} */
 		public function handle(BaseSocketHandler $handler, String $messageType, String $number, String $key, String $messageParams) {
 			if ($this->client != null) {
 				$message = $messageType . ' ' . $messageParams;

@@ -16,22 +16,22 @@
 	 * Socket Implemenation using ReactPHP library.
 	 */
 	class Socket extends BaseSocket {
-		/** @var Object Underlying Socket */
+		/** @var object Underlying Socket */
 		private $socket;
 
-		/** @var Array of open handlers. */
+		/** @var array of open handlers. */
 		private $handlers;
 
 		/** @var bool Are we accepting new connections? */
 		private $allowNew = false;
 
-		/** @inheritDoc */
+		/** {@inheritdoc} */
 		public function __construct(MessageLoop $loop, String $host, int $port, int $timeout) {
 			parent::__construct($loop, $host, $port, $timeout);
 			$this->handlers = new \SplObjectStorage();
 		}
 
-		/** @inheritDoc */
+		/** {@inheritdoc} */
 		public function listen() {
 			if ($this->socket !== null) { throw new Exception('Socket is already active.'); }
 			$this->allowNew = true;
@@ -47,7 +47,7 @@
 			$this->setTimers();
 		}
 
-		/** @inheritDoc */
+		/** {@inheritdoc} */
 		public function connect() {
 			if ($this->socket !== null) { throw new Exception('Socket is already active.'); }
 			$this->allowNew = true;
@@ -130,7 +130,7 @@
 			});
 		}
 
-		/** @inheritDoc */
+		/** {@inheritdoc} */
 		public function close(String $message = 'Socket closing.') {
 			// Stop accepting any new sockets.
 			$this->allowNew = false;

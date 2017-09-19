@@ -4,17 +4,17 @@
 	use shanemcc\socketrelayserver\impl\SocketRelay\ServerSocketHandler;
 
 	class HELP extends MessageHandler {
-		/** @inheritDoc. */
+		/** {@inheritdoc}. */
 		public function getMessageType(): String {
 			return '??';
 		}
 
-		/** @inheritDoc. */
+		/** {@inheritdoc}. */
 		public function getDescription(): String {
 			return 'Show help';
 		}
 
-		/** @inheritDoc */
+		/** {@inheritdoc} */
 		public function handleMessage(ServerSocketHandler $handler, String $number, String $key, String $messageParams): bool {
 
 			$rType = ($key == '--') ? '--' : '??';

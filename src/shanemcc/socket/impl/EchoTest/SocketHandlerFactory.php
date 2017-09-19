@@ -9,7 +9,7 @@
 	 * Factory to create EchoTest SocketHandlers.
 	 */
 	class SocketHandlerFactory implements BaseSocketHandlerFactory {
-		/** @inheritDoc */
+		/** {@inheritdoc} */
 		public function get(SocketConnection $conn) : BaseSocketHandler {
 			return new SocketHandler($conn);
 		}

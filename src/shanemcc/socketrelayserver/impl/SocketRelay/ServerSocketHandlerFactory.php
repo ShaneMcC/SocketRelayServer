@@ -16,13 +16,13 @@
 		/**
 		 * Create a new ServerSocketHandlerFactory
 		 *
-		 * @param SocketRelayServer $server Server that owns us.
+		 * @param SocketRelayServer $server Server that owns us
 		 */
 		public function __construct(SocketRelayServer $server) {
 			$this->server = $server;
 		}
 
-		/** @inheritDoc */
+		/** {@inheritdoc} */
 		public function get(SocketConnection $conn) : BaseSocketHandler {
 			return new ServerSocketHandler($conn, $this->server);
 		}

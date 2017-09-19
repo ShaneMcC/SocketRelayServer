@@ -8,10 +8,10 @@
 	 * SocketRelay ClientSocketHandler.
 	 */
 	class ClientSocketHandler extends BaseSocketHandler {
-		/** @var String Key for sending message. */
+		/** @var string Key for sending message. */
 		private $key;
 
-		/** @var Array Array of messages to send. */
+		/** @var array Array of messages to send. */
 		private $messages;
 
 		/** @var ?Callable Callable to call when we are done. */
@@ -21,8 +21,8 @@
 		 * Create a new ClientSocketHandler
 		 *
 		 * @param SocketConnection $conn Client to handle
-		 * @param Array $messages Array of messages to send.
-		 * @param ?Callable $success Callable to call when we are done.
+		 * @param array $messages Array of messages to send
+		 * @param ?Callable $success Callable to call when we are done
 		 */
 		public function __construct(SocketConnection $conn, String $key, Array $messages, ?Callable $success = null) {
 			parent::__construct($conn);
@@ -31,7 +31,7 @@
 			$this->success = $success;
 		}
 
-		/** @inheritDoc */
+		/** {@inheritdoc} */
 		public function onConnect() {
 			$i = 0;
 			foreach ($this->messages as $message) {
