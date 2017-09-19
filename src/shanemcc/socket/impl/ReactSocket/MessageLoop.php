@@ -1,7 +1,7 @@
 <?php
-	namespace shanemcc\socketrelayserver\impl\ReactSocket;
-	use shanemcc\socketrelayserver\iface\MessageLoop as BaseMessageLoop;
-	use shanemcc\socketrelayserver\iface\Socket as BaseSocket;
+	namespace shanemcc\socket\impl\ReactSocket;
+	use shanemcc\socket\iface\MessageLoop as BaseMessageLoop;
+	use shanemcc\socket\iface\Socket as BaseSocket;
 
 	use React\EventLoop\Factory as EventLoopFactory;
 	use React\EventLoop\LoopInterface;

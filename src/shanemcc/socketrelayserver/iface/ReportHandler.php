@@ -1,7 +1,7 @@
 <?php
 	namespace shanemcc\socketrelayserver\iface;
 
-	use shanemcc\socketrelayserver\iface\SocketHandler;
+	use shanemcc\socket\iface\SocketHandler;
 
 	/**
 	 * Deal with sending a report somewhere.

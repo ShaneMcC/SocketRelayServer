@@ -1,5 +1,5 @@
 <?php
-	namespace shanemcc\socketrelayserver\iface;
+	namespace shanemcc\socket\iface;
 
 	/**
 	 * Class representing a Connection to/from a Socket.

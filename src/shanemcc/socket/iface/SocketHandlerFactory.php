@@ -1,5 +1,5 @@
 <?php
-	namespace shanemcc\socketrelayserver\iface;
+	namespace shanemcc\socket\iface;
 
 	/**
 	 * Interface for a Factory to create new SocketHandlers for SocketConnection.

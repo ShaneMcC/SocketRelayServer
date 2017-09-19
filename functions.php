@@ -6,7 +6,7 @@
 	}
 
 	require_once(__DIR__ . '/vendor/autoload.php');
-	use shanemcc\socketrelayserver\impl\ReactSocket\MessageLoop as React_MessageLoop;
+	use shanemcc\socket\impl\ReactSocket\MessageLoop as React_MessageLoop;
 	$loop = new React_MessageLoop();
 
 	require_once(dirname(__FILE__) . '/config.php');

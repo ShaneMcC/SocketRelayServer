@@ -1,13 +1,13 @@
 <?php
-	namespace shanemcc\socketrelayserver\impl\ReactSocket;
+	namespace shanemcc\socket\impl\ReactSocket;
 
 	use React\Socket\TcpServer;
 	use React\Socket\Connector;
 	use React\Socket\TimeoutConnector;
 	use React\Socket\ConnectionInterface;
 
-	use shanemcc\socketrelayserver\iface\Socket as BaseSocket;
-	use shanemcc\socketrelayserver\impl\ReactSocket\SocketConnection;
+	use shanemcc\socket\iface\Socket as BaseSocket;
+	use shanemcc\socket\impl\ReactSocket\SocketConnection;
 
 	use \Throwable;
 	use \Exception;

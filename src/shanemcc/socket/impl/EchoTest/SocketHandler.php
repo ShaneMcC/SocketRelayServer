@@ -1,7 +1,7 @@
 <?php
-	namespace shanemcc\socketrelayserver\impl\EchoTest;
+	namespace shanemcc\socket\impl\EchoTest;
 
-	use shanemcc\socketrelayserver\iface\SocketHandler as BaseSocketHandler;
+	use shanemcc\socket\iface\SocketHandler as BaseSocketHandler;
 
 	/**
 	 * EchoTest SocketHandler.

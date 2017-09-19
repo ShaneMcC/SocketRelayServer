@@ -3,11 +3,11 @@
 
 	use shanemcc\socketrelayserver\impl\SocketRelay\ServerSocketHandlerFactory as SocketRelay_ServerSocketHandlerFactory;
 	use shanemcc\socketrelayserver\impl\SocketRelay\ServerSocketHandler as SocketRelay_ServerSocketHandler;
-	use shanemcc\socketrelayserver\iface\ReportHandler;
-	use shanemcc\socketrelayserver\iface\Socket as BaseSocket;
-	use shanemcc\socketrelayserver\iface\MessageLoop;
+	use shanemcc\socket\iface\Socket as BaseSocket;
+	use shanemcc\socket\iface\MessageLoop;
 
-	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\MessageHandler;
+        use shanemcc\socketrelayserver\iface\ReportHandler;
+
 	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\Q;
 	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\CM;
 	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\A;

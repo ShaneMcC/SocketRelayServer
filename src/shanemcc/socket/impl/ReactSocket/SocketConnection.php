@@ -1,7 +1,7 @@
 <?php
-	namespace shanemcc\socketrelayserver\impl\ReactSocket;
+	namespace shanemcc\socket\impl\ReactSocket;
 
-	use shanemcc\socketrelayserver\iface\SocketConnection as BaseSocketConnection;
+	use shanemcc\socket\iface\SocketConnection as BaseSocketConnection;
 	use React\Socket\ConnectionInterface;
 
 	/**
