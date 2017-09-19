@@ -1,10 +1,10 @@
 <?php
-	namespace shanemcc\socketrelayserver\impl\SocketRelay;
+	namespace shanemcc\socketrelay\impl;
 
 	use shanemcc\socket\iface\SocketHandlerFactory as BaseSocketHandlerFactory;
 	use shanemcc\socket\iface\SocketConnection;
 	use shanemcc\socket\iface\SocketHandler as BaseSocketHandler;
-	use shanemcc\socketrelayserver\SocketRelayServer;
+	use shanemcc\socketrelay\SocketRelayServer;
 
 	/**
 	 * Factory to create SocketRelay SocketHandlers.

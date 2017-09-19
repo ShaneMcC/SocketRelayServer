@@ -1,5 +1,5 @@
 <?php
-	namespace shanemcc\socketrelayserver\impl\SocketRelay;
+	namespace shanemcc\socketrelay\impl;
 
 	use shanemcc\socket\iface\SocketHandler as BaseSocketHandler;
 	use shanemcc\socket\iface\SocketConnection;

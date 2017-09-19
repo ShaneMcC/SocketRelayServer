@@ -1,11 +1,11 @@
 <?php
-	namespace shanemcc\socketrelayserver\impl\SocketRelay;
+	namespace shanemcc\socketrelay\impl;
 
 	use shanemcc\socket\iface\SocketHandler as BaseSocketHandler;
 	use shanemcc\socket\iface\SocketConnection;
-	use shanemcc\socketrelayserver\SocketRelayServer;
+	use shanemcc\socketrelay\SocketRelayServer;
 
-	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\MessageHandler;
+	use shanemcc\socketrelay\impl\MessageHandler\MessageHandler;
 
 	/**
 	 * SocketRelay ServerSocketHandler.

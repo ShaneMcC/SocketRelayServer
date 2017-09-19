@@ -1,7 +1,7 @@
 <?php
-	namespace shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler;
+	namespace shanemcc\socketrelay\impl\messagehandler;
 
-	use shanemcc\socketrelayserver\impl\SocketRelay\ServerSocketHandler;
+	use shanemcc\socketrelay\impl\ServerSocketHandler;
 
 	class HELP extends MessageHandler {
 		/** {@inheritdoc}. */

@@ -1,9 +1,9 @@
 <?php
-	namespace shanemcc\socketrelayserver\impl\SocketRelay;
+	namespace shanemcc\socketrelay\impl;
 
-	use shanemcc\socketrelayserver\SocketRelayClient;
+	use shanemcc\socketrelay\SocketRelayClient;
 	use shanemcc\socket\iface\SocketConnection;
-	use shanemcc\socketrelayserver\iface\ReportHandler;
+	use shanemcc\socketrelay\iface\ReportHandler;
 	use shanemcc\socket\iface\SocketHandler as BaseSocketHandler;
 	use shanemcc\socket\iface\MessageLoop;
 

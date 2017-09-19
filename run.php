@@ -2,10 +2,10 @@
 <?php
 	require_once(__DIR__ . '/functions.php');
 
-	use shanemcc\socketrelayserver\iface\ReportHandler;
-	use shanemcc\socketrelayserver\impl\SocketRelay\RelayReportHandler;
-	use shanemcc\socketrelayserver\SocketRelayServer;
-	use shanemcc\socketrelayserver\SocketRelayClient;
+	use shanemcc\socketrelay\iface\ReportHandler;
+	use shanemcc\socketrelay\impl\RelayReportHandler;
+	use shanemcc\socketrelay\SocketRelayServer;
+	use shanemcc\socketrelay\SocketRelayClient;
 
 	// Set up our relay client.
 	$client = null;

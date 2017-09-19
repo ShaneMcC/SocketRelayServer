@@ -1,8 +1,8 @@
 <?php
-	namespace shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler;
+	namespace shanemcc\socketrelay\impl\messagehandler;
 
-	use shanemcc\socketrelayserver\iface\ReportHandler;
-	use shanemcc\socketrelayserver\impl\SocketRelay\ServerSocketHandler;
+	use shanemcc\socketrelay\iface\ReportHandler;
+	use shanemcc\socketrelay\impl\ServerSocketHandler;
 
 	abstract class TargettedMessage extends MessageHandler {
 

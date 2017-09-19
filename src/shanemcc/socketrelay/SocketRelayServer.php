@@ -1,19 +1,19 @@
 <?php
-	namespace shanemcc\socketrelayserver;
+	namespace shanemcc\socketrelay;
 
-	use shanemcc\socketrelayserver\impl\SocketRelay\ServerSocketHandlerFactory as SocketRelay_ServerSocketHandlerFactory;
-	use shanemcc\socketrelayserver\impl\SocketRelay\ServerSocketHandler as SocketRelay_ServerSocketHandler;
+	use shanemcc\socketrelay\impl\ServerSocketHandlerFactory as SocketRelay_ServerSocketHandlerFactory;
+	use shanemcc\socketrelay\impl\ServerSocketHandler as SocketRelay_ServerSocketHandler;
 	use shanemcc\socket\iface\Socket as BaseSocket;
 	use shanemcc\socket\iface\MessageLoop;
 
-	use shanemcc\socketrelayserver\iface\ReportHandler;
+	use shanemcc\socketrelay\iface\ReportHandler;
 
-	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\Q;
-	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\CM;
-	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\A;
-	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\PM;
-	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\LS;
-	use shanemcc\socketrelayserver\impl\SocketRelay\MessageHandler\HELP;
+	use shanemcc\socketrelay\impl\messagehandler\Q;
+	use shanemcc\socketrelay\impl\messagehandler\CM;
+	use shanemcc\socketrelay\impl\messagehandler\A;
+	use shanemcc\socketrelay\impl\messagehandler\PM;
+	use shanemcc\socketrelay\impl\messagehandler\LS;
+	use shanemcc\socketrelay\impl\messagehandler\HELP;
 
 	/**
 	 * SocketRelayServer.
