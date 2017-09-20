@@ -47,13 +47,13 @@
 		}
 
 		/** {@inheritdoc} */
-		public function connect() {
+		public function connect($connectTimeout = 5) {
 			if ($this->socket !== null) { throw new Exception('Socket is already active.'); }
 			$this->allowNew = true;
 
  			if ($this->getMessageLoop() instanceof MessageLoop) {
  				$loop = $this->getMessageLoop()->getLoopInterface();
-				$this->socket = new TimeoutConnector(new Connector($loop), 5, $loop);
+				$this->socket = new TimeoutConnector(new Connector($loop), $connectTimeout, $loop);
 
 				$this->socket->connect($this->getHost() . ':' . $this->getPort())->then([$this, 'handleConnection'], function (Throwable $error) {
 					$this->onError('connectattempt', $error);
@@ -102,6 +102,8 @@
 		 * Start idle-timeout timer.
 		 */
 		protected function setTimers() {
+			if ($this->getTimeout() <= 0) { return; }
+
 			$this->getMessageLoop()->schedule($this->getTimeout(), true, function() {
 				$timeout = time() - $this->getTimeout();
 

@@ -31,7 +31,7 @@
 		 * @param MessageLoop $loop Our message loop
 		 * @param string  $host Host to use
 		 * @param int $port Port to use
-		 * @param int $timeout How long to allow client sockets to be idle
+		 * @param int $timeout How long to allow client sockets to be idle (-1 for infinite)
 		 */
 		public function __construct(MessageLoop $loop, String $host, int $port, int $timeout) {
 			$this->loop = $loop;
@@ -82,7 +82,7 @@
 		 * @param string $handlerName Handler name
 		 * @param Throwable $throwable The exception
 		 */
-		private function defaultOnError(String $handlerName, Throwable $throwable) {
+		public function defaultOnError(String $handlerName, Throwable $throwable) {
 			echo 'Throwable in ', $handlerName, ' handler.', "\n";
 			echo "\t", $throwable->getMessage(), "\n";
 			foreach (explode("\n", $throwable->getTraceAsString()) as $t) {

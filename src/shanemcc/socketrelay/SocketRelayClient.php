@@ -84,15 +84,6 @@
 		}
 
 		/**
-		 * Get our Client Socket.
-		 *
-		 * @return Socket our Client Socket
-		 */
-		public function getSocket(): BaseSocket {
-			return $this->client;
-		}
-
-		/**
 		 * Get our key.
 		 *
 		 * @return string our key

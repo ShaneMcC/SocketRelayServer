@@ -38,7 +38,7 @@
 		public function onConnect() { }
 
 		/**
-		 * Called when a new connection is refused before closing it.
+		 * Called when a new incoming connection is refused before closing it.
 		 */
 		public function onConnectRefused() { }
 

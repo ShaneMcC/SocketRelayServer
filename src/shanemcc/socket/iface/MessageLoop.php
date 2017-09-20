@@ -38,4 +38,11 @@
 		 * @param callable $function Function to run,
 		 */
 		public abstract function schedule(float $time, bool $repeat, Callable $function);
+
+		/**
+		 * Cancel a previously scheduled timer.
+		 *
+		 * @param mixed $timer Timer to cancel.
+		 */
+		public abstract function cancel($timer);
 	}

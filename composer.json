@@ -11,7 +11,8 @@
     ],
     "require": {
         "react/socket": "^0.8.4",
-        "react/event-loop": "^0.4.3"
+        "react/event-loop": "^0.4.3",
+        "evenement/evenement": "^3.0"
     },
     "autoload": {
         "psr-0": {

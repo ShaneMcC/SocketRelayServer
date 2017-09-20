@@ -9,12 +9,9 @@
 
 	use \Throwable;
 
-	class RelayReportHandler implements ReportHandler {
+	class RelayReportHandler extends RetryReportHandler {
 		/** @var SocketRelayClient to relay reports to. */
 		private $client;
-
-		/** @var array Array of queued messages. */
-		private $queued = [];
 
 		/** @var string Suffix to append to relayed messages. */
 		private $suffix = '';
@@ -28,18 +25,15 @@
 		 * @param String $suffix Suffix to append to relayed messages
 		 */
 		public function __construct(MessageLoop $loop, ?SocketRelayClient $client, ?String $suffix) {
+			parent::__construct($loop);
+
 			$this->client = $client;
-
 			if (!empty($suffix)) { $this->suffix = $suffix; }
+		}
 
-			// Set up a timer to retry queued messages.
-			if ($this->client != null) {
-				$loop->schedule(60, true, function() {
-					if (count($this->queued) > 0) {
-						$this->client->addMessage([$this, 'sendMessagesToSocket'])->send();
-					}
-				});
-			}
+		/** {@inheritdoc} */
+		public function retry() {
+			$this->client->addMessage([$this, 'sendMessagesToSocket'])->send();
 		}
 
 		/**
@@ -50,39 +44,14 @@
 		 * @param string $key Client Key
 		 */
 		public function sendMessagesToSocket(SocketConnection $conn, int &$i, String $key) {
-			$messages = $this->queued;
-			$this->queued = [];
+			$messages = $this->getQueued();
+			$this->clearQueued();
 
 			foreach ($messages as $message) {
 				$conn->writeln($i++ . ' ' . $key . ' ' . $message);
 			}
 		}
 
-		/**
-		 * Get current queued messages.
-		 *
-		 * @return array Array of queued messages
-		 */
-		public function getQueued(): array {
-			return $this->queued;
-		}
-
-		/**
-		 * Add a new queued message.
-		 *
-		 * @param string|array $message Message to queue
-		 */
-		public function queueMessage($message) {
-			if (!is_array($message) && is_string($message)) {
-				$this->queued[] = $message;
-			} else if (is_array($message)) {
-				foreach ($message as $msg) {
-					if (is_string($msg)) {
-						$this->queued[] = $msg;
-					}
-				}
-			}
-		}
 
 		/** {@inheritdoc} */
 		public function handle(BaseSocketHandler $handler, String $messageType, String $number, String $key, String $messageParams) {
@@ -99,16 +68,16 @@
 					}
 				}, function(String $errorType, Throwable $t) use ($handler, $number, $messageType, $message) {
 					if ($handler instanceof ServerSocketHandler) {
-						$handler->sendResponse($number, $messageType, 'Error relaying message: ' . $t->getMessage());
+						$handler->sendResponse($number, $messageType, 'Error relaying message: ' . $t->getMessage() . ' (Message has been queued)');
 					}
 
 					$this->queueMessage($message);
 				});
 
 			} else {
-                if ($handler instanceof ServerSocketHandler) {
-                    $handler->sendResponse($number, $messageType, 'Relaying disabled.');
-                }
+				if ($handler instanceof ServerSocketHandler) {
+					$handler->sendResponse($number, $messageType, 'Relaying disabled.');
+				}
 			}
 		}
 	}

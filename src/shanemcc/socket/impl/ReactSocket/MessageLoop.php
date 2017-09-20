@@ -48,6 +48,11 @@
 			}
 		}
 
+		/** {@inheritdoc} */
+		public function cancel($timer) {
+			$this->loop->cancelTimer($timer);
+		}
+
 		/**
 		 * Get the underlying ReactPHP LoopInterface.
 		 *
