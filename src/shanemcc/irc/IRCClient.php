@@ -72,6 +72,15 @@
 		}
 
 		/**
+		 * Get the message loop being used by this client.
+		 *
+		 * @return MessageLoop our messageloop
+		 */
+		public function getMessageLoop(): MessageLoop {
+			return $this->messageLoop;
+		}
+
+		/**
 		 * Connect to IRC.
 		 *
 		 * @param Callable $error Callback if there is an error connecting.
