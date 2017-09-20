@@ -35,7 +35,7 @@
 		$client = new IRCClient();
 
 		if (isset($clientConf['handler']) && is_callable($clientConf['handler'])) {
-			call_user_func($clientConf['handler'], $loop, $connectionSettings, $client);
+			call_user_func($clientConf['handler'], $loop, $clientConf, $connectionSettings, $client);
 		} else {
 			$client->on('server.ready', function($client) use ($clientConf) {
 				$client->joinChannel($clientConf['channels']);

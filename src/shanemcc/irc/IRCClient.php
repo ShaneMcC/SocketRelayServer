@@ -54,6 +54,8 @@
 
 			$this->internalEmitter->on('raw.376', [$this, 'afterMOTD']);
 			$this->internalEmitter->on('raw.422', [$this, 'afterMOTD']);
+
+			$this->internalEmitter->on('process.nick', [$this, 'processNICK']);
 		}
 
 		/**
@@ -274,7 +276,7 @@
 					if (is_numeric($param)) {
 						$this->doEmit(sprintf('raw.%03d', (int)$param), [$bits]);
 					} else {
-						$this->doEmit(sprintf('process.%s', $param), [$bits]);
+						$this->doEmit(sprintf('process.%s', strtolower($param)), [$bits]);
 					}
 				} else {
 					switch ($nParam) {
@@ -343,6 +345,18 @@
 					$this->setNickname($this->myNickname);
 				}
 			}
+		}
+
+		public function processNICK(array $bits) {
+			$changedPerson = explode('!', explode(':', $bits[0], 2)[1], 1)[0];
+
+			if ($changedPerson == $this->myNickname && isset($bits[2])) {
+				$this->myNickname = $bits[2];
+			}
+		}
+
+		public function getNickname() {
+			return $this->myNickname;
 		}
 
 		public function setNickname(String $wantedNick) {
