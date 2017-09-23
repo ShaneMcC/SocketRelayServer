@@ -7,6 +7,10 @@
 	use shanemcc\socket\iface\Socket as BaseSocket;
 	use shanemcc\socket\iface\MessageLoop;
 
+	use shanemcc\irc\OutputQueue\OutputQueue;
+	use shanemcc\irc\OutputQueue\TimedBucketOutputQueue;
+	use shanemcc\irc\OutputQueue\QueuePriority;
+
 	use Evenement\EventEmitter;
 
 	use \Exception;
@@ -38,6 +42,8 @@
 		private $myNickname = '';
 		private $connectionSettings = [];
 		private $connectTime = 0;
+
+		private $outputQueue;
 
 		/**
 		 * Create a new IRCClient.
@@ -143,7 +149,7 @@
 							$this->quit('Ping Timeout.');
 							$this->socket->close();
 						} else {
-							$this->writeln('PING ' . time());
+							$this->writeln('PING ' . time(), QueuePriority::Immediate);
 							$this->lastDataTime = time();
 							$this->sentPing = true;
 						}
@@ -155,6 +161,7 @@
 		}
 
 		private function reset() {
+			$this->outputQueue = null;
 			$this->socket = null;
 
 			if ($this->handler !== null) { $this->handler->removeAllListeners(); }
@@ -178,6 +185,7 @@
 		public function setSocketHandler(IRCSocketHandler $handler) {
 			if ($this->handler !== null) { throw new Exception('Handler already assigned.'); }
 			$this->handler = $handler;
+			$this->outputQueue = new TimedBucketOutputQueue($this->messageLoop, $this->handler);
 
 			$this->handler->on('socket.connected', [$this, 'socketConnected']);
 			$this->handler->on('data.out', [$this, 'dataOut']);
@@ -224,9 +232,9 @@
 			$this->doEmit('socket.closed');
 		}
 
-		public function writeln(String $line) {
-			if ($this->handler === null) { throw new Exception('No open socket.'); }
-			$this->handler->writeln($line);
+		public function writeln(String $line, int $priority = QueuePriority::Normal) {
+			if ($this->outputQueue === null) { throw new Exception('No open socket.'); }
+			$this->outputQueue->writeln($line, $priority);
 		}
 
 		public function dataOut(String $data) {
@@ -258,9 +266,9 @@
 			$param = strtoupper($bits[1]);
 
 			if ($first == 'PING') {
-				$this->writeln(sprintf('PONG :%s', $param));
+				$this->writeln(sprintf('PONG :%s', $param), QueuePriority::Immediate);
 			} else if ($param == 'PING' && isset($bits[2])) {
-				$this->writeln(sprintf('PONG :%s', $bits[2]));
+				$this->writeln(sprintf('PONG :%s', $bits[2]), QueuePriority::Immediate);
 			} else if ($first == 'PONG') {
 				$this->sentPing = false;
 			} else if ($first == 'ERROR') {
@@ -385,6 +393,7 @@
 		}
 
 		public function quit(String $reason = '') {
+			$this->outputQueue->clear();
 			$this->writeln(sprintf('QUIT :%s', $reason));
 		}
 	}
