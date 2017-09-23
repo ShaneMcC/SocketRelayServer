@@ -43,7 +43,7 @@
 		}
 
 		$client->on('socket.closed', function($client) use ($connectionSettings, $loop) {
-			$loop->schedule(5, false, function() use ($client, $connectionSettings) {
+			$loop->schedule(30, false, function() use ($client, $connectionSettings) {
 				$client->connect($connectionSettings);
 			});
 		});
