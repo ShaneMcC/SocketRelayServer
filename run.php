@@ -42,11 +42,13 @@
 			});
 		}
 
-		$client->on('socket.closed', function($client) use ($connectionSettings, $loop) {
+		$reconnectFunction = function($client) use ($connectionSettings, $loop) {
 			$loop->schedule(30, false, function() use ($client, $connectionSettings) {
 				$client->connect($connectionSettings);
 			});
-		});
+		};
+		$client->on('socket.closed', $reconnectFunction);
+		$client->on('socket.connectfailed', $reconnectFunction);
 
 		$client->setMessageLoop($loop)->connect($connectionSettings);
 

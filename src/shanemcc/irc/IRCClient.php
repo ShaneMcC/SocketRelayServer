@@ -121,12 +121,12 @@
 					if (!empty($this->listeners('socket.connectfailed'))) {
 						$this->doEmit('socket.connectfailed', [$throwable]);
 					} else {
-						$this->showThrowable($t);
+						$this->showThrowable($throwable);
 					}
 
 					if ($startLoop) { $this->messageLoop->stop(); }
 				} else {
-					$this->showThrowable($t);
+					$this->showThrowable($throwable);
 				}
 			});
 
