@@ -6,6 +6,7 @@ COPY . /socketRelayServer
 WORKDIR /socketRelayServer
 
 RUN \
+  apt-get update && apt-get install -y git unzip \
   docker-php-source extract && \
   docker-php-ext-install pcntl && \
   docker-php-source delete && \
