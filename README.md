@@ -13,7 +13,7 @@ also persist these failures to disk to try again later.
 The code in this repo is available as-is under the MIT License with no support
 offered and primarily exists purely for my own benefit.
 
-The closest thing to any kind of documentation on the protocol is in the [HELP Handler Code](https://github.com/ShaneMcC/SocketRelayServer/blob/master/src/shanemcc/socketrelayserver/impl/SocketRelay/MessageHandler/HELP.php).
+The closest thing to any kind of documentation on the protocol is in the [HELP Handler Code](https://github.com/ShaneMcC/SocketRelayServer/blob/master/src/shanemcc/socketrelay/impl/messagehandler/HELP.php).
 
 Configuration can be done using either a `config.local.php` file or ENV vars.
 Check [`config.php`](https://github.com/ShaneMcC/SocketRelayServer/blob/master/config.php) for valid config settings.
