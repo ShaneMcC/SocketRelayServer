@@ -139,7 +139,9 @@
 			$parts = explode(' ', $data, 4);
 			$number = $parts[0];
 
-			if (count($parts) < 3) {
+			if ($number == '//') {
+				return;
+			} else if (count($parts) < 3) {
 				if ($data == '??') {
 					$this->runMessageHandler('??', '--', '--', '');
 					$this->closeConnection();

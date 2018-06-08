@@ -2,3 +2,4 @@ vendor
 config.local.php
 .failedMessages
 test.php
+/nbproject/private/
