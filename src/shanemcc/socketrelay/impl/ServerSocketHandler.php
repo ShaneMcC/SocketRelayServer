@@ -153,6 +153,8 @@
 				$messageType = $parts[2];
 
 				if ($this->isValidKey($key)) {
+					if ($this->isDeprecatedKey($key)) { $parts[3] .= ' {Deprecated}'; }
+
 					if ($this->canAccess($key, $messageType)) {
 						$messageParams = isset($parts[3]) ? $parts[3] : '';
 
@@ -229,6 +231,17 @@
 		public function isValidKey(String $key): bool {
 			$validKeys = $this->server->getValidKeys();
 			return array_key_exists($key, $validKeys);
+		}
+
+		/**
+		 * Check if the given key is deprecated.
+		 *
+		 * @param string $key Key to check
+		 * @return bool True iif key is valid
+		 */
+		public function isDeprecatedKey(String $key): bool {
+			$deprecatedKeys = $this->server->getDeprecatedKeys();
+			return array_key_exists($key, $deprecatedKeys);
 		}
 
 		/**

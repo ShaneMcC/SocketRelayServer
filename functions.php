@@ -36,6 +36,7 @@
 		}
 
 		$server->setValidKeys($config['validKeys']);
+		$server->setDeprecatedKeys($config['deprecatedKeys']);
 
 		$reloadServer = true;
 		if ($config['listen']['host'] != $oldConfig['listen']['host']) { $reloadServer = true; }
@@ -54,6 +55,7 @@
 	function setupServer(MessageLoop $loop, Array $config, ?ReportHandler $reportHandler = null): SocketRelayServer {
 		$server = new SocketRelayServer($loop, $config['listen']['host'], (int)$config['listen']['port'], (int)$config['listen']['timeout']);
 		$server->setValidKeys($config['validKeys']);
+		$server->setDeprecatedKeys($config['deprecatedKeys']);
 
 		if ($reportHandler instanceof ReportHandler) {
 			$server->setReportHandler($reportHandler);

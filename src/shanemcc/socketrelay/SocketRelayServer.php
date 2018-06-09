@@ -43,6 +43,9 @@
 		/** @var array Array of valid keys. 'Key' => [Allowed Functions] */
 		private $validKeys;
 
+		/** @var array Array of deprecated keys. 'Key' => 'reason' */
+		private $deprecatedKeys;
+
 		/**
 		 * Create a new SocketRelayServer.
 		 *
@@ -126,6 +129,24 @@
 		 */
 		public function getValidKeys(): Array {
 			return $this->validKeys;
+		}
+
+		/**
+		 * Set our deprecated keys.
+		 *
+		 * @param array $deprecatedKeys Array of deprecated keys
+		 */
+		public function setDeprecatedKeys(Array $deprecatedKeys) {
+			$this->deprecatedKeys = $deprecatedKeys;
+		}
+
+		/**
+		 * Get our deprecated keys.
+		 *
+		 * @return array Array of deprecated keys
+		 */
+		public function getDeprecatedKeys(): Array {
+			return $this->deprecatedKeys;
 		}
 
 		/**

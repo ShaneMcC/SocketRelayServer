@@ -23,6 +23,7 @@
 	$config['reporter']['irc']['port'] = getEnvOrDefault('REPORTER_IRC_PORT', '6667');
 	$config['reporter']['irc']['password'] = getEnvOrDefault('REPORTER_IRC_PASSWORD', '');
 
+	$config['deprecatedKeys'] = [];
 
 	$config['validKeys'] = [];
 	$config['validKeys']['347FF0B5-35BB-4212-A78B-67883B6F2A97'] = ['*'];
