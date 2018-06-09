@@ -67,13 +67,13 @@
 		}
 
 		public function handleConnection(ConnectionInterface $conn) {
-			$SocketConnection = new SocketConnection($conn);
-			$handler = $this->getSocketHandlerFactory()->get($SocketConnection);
-			$this->handlers[$handler] = ['time' => time(), 'conn' => $SocketConnection];
+			$socketConnection = new SocketConnection($conn);
+			$handler = $this->getSocketHandlerFactory()->get($socketConnection);
+			$this->handlers[$handler] = ['time' => time(), 'conn' => $socketConnection];
 
 			if (!$this->allowNew) {
 				try { $handler->onConnectRefused(); } catch (Throwable $ex) { $this->onError('connect', $ex); }
-				$SocketConnection->close();
+				$socketConnection->close();
 				return;
 			}
 
@@ -132,15 +132,20 @@
 		}
 
 		/** {@inheritdoc} */
-		public function close(String $message = 'Socket closing.') {
+		public function close(String $message = 'Socket closing.', $closeChildren = true) {
 			// Stop accepting any new sockets.
 			$this->allowNew = false;
 
-			// Close sockets.
-			foreach ($this->handlers as $handler) {
-				$handler->closeSocket($message);
-				$this->handlers[$handler]['conn']->close();
-				unset($this->handlers[$handler]);
+			// Close child sockets.
+			if ($closeChildren) {
+				foreach ($this->handlers as $handler) {
+					$handler->closeSocket($message);
+					$this->handlers[$handler]['conn']->close();
+					unset($this->handlers[$handler]);
+				}
 			}
+
+			// Close parent socket.
+			$this->socket->close();
 		}
 	}

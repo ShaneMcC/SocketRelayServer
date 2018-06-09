@@ -6,7 +6,6 @@
 	use shanemcc\socketrelay\impl\RetryReportHandler;
 	use shanemcc\socketrelay\impl\handlersetup\SocketRelay as SocketRelaySetup;
 	use shanemcc\socketrelay\impl\handlersetup\IRCReportHandler as IRCReportHandlerSetup;
-	use shanemcc\socketrelay\SocketRelayServer;
 
 	// Set up our relay client.
 	$client = null;
@@ -67,13 +66,7 @@
 	pcntl_async_signals(true);
 
 	// Set up our main listen socket.
-	$server = new SocketRelayServer($loop, $config['listen']['host'], (int)$config['listen']['port'], (int)$config['listen']['timeout']);
-	$server->setValidKeys($config['validKeys']);
-	if ($reportHandler instanceof ReportHandler) {
-		$server->setReportHandler($reportHandler);
-	}
-	$server->setVerbose($config['verbose']);
-	$server->listen();
+	$server = setupServer($loop, $config, $reportHandler);
 
 	// Run the loop.
 	$loop->run();
