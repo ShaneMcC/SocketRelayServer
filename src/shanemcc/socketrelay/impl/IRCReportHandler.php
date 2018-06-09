@@ -40,7 +40,7 @@
 			$bits = explode(' ', $message, 3);
 			$type = strtoupper($message[0]);
 
-			if (isset($bits[2]) && in_array($bits[0], ['CM', 'PM'])) {
+			if (isset($bits[2]) && (($bits[0] == 'CM' && $this->client->validChannel($bits[1])) || ($bits[0] == 'PM' && $this->client->validUser($bits[1]))) ) {
 				$this->client->sendMessage($bits[1], $bits[2]);
 			}
 		}

@@ -380,6 +380,14 @@
 			$this->writeln(sprintf('NICK %s', $wantedNick));
 		}
 
+		public function validChannel(String $target): bool {
+			return TRUE;
+		}
+
+		public function validUser(String $target): bool {
+			return TRUE;
+		}
+
 		public function sendMessage(String $target, String $message) {
 			$this->writeln(sprintf('PRIVMSG %s :%s', $target, $message));
 		}
