@@ -9,6 +9,7 @@
 
 	use shanemcc\irc\OutputQueue\OutputQueue;
 	use shanemcc\irc\OutputQueue\TimedBucketOutputQueue;
+	use shanemcc\irc\OutputQueue\ImmediateOutputQueue;
 	use shanemcc\irc\OutputQueue\QueuePriority;
 
 	use Evenement\EventEmitter;
@@ -41,6 +42,7 @@
 
 		private $myNickname = '';
 		private $connectionSettings = [];
+		private $queueSettings = [];
 		private $connectTime = 0;
 
 		private $outputQueue;
@@ -126,6 +128,8 @@
 					$this->joinChannel(implode(',', $added));
 				}
 			}
+
+			return $this;
 		}
 
 		/**
@@ -235,7 +239,7 @@
 		public function setSocketHandler(IRCSocketHandler $handler) {
 			if ($this->handler !== null) { throw new Exception('Handler already assigned.'); }
 			$this->handler = $handler;
-			$this->outputQueue = new TimedBucketOutputQueue($this->messageLoop, $this->handler);
+			$this->updateOutputQueue();
 
 			$this->handler->on('socket.connected', [$this, 'socketConnected']);
 			$this->handler->on('data.out', [$this, 'dataOut']);
@@ -243,6 +247,54 @@
 			$this->handler->on('socket.closed', [$this, 'socketClosed']);
 
 			return $this->handler;
+		}
+
+		public function getQueueSettings(): Array {
+			return $this->queueSettings;
+		}
+
+		public function setQueueSettings(?Array $queueSettings) {
+			$this->queueSettings = $queueSettings;
+			if ($this->outputQueue !== null) { $this->updateOutputQueue(); }
+			return $this;
+		}
+
+		private function updateOutputQueue() {
+			$oldQueue = $this->outputQueue;
+			$queueChanged = false;
+
+			$config = $this->queueSettings;
+			if ($config == null) { $config = []; }
+
+			$config['enabled'] = @$config['enabled'] ?: true;
+
+			if ($config['enabled']) {
+				$config['capacityMax'] = @$config['capacityMax'] ?: 5;
+				$config['refilRate'] = @$config['refilRate'] ?: 0.7;
+				$config['timerRate'] = @$config['timerRate'] ?: 1;
+
+				if ($oldQueue === null || !($oldQueue instanceof TimedBucketOutputQueue)) {
+					$queueChanged = ($oldQueue !== null);
+					$this->outputQueue = new TimedBucketOutputQueue($this->messageLoop, $this->handler);
+				}
+
+				$this->outputQueue->setCapacityMax($config['capacityMax']);
+				$this->outputQueue->setRefilRate($config['refilRate']);
+				$this->outputQueue->setTimerRate($config['timerRate']);
+			} else {
+				if ($oldQueue === null || !($oldQueue instanceof ImmediateOutputQueue)) {
+					$queueChanged = ($oldQueue !== null);
+					$this->outputQueue = new ImmediateOutputQueue($this->messageLoop, $this->handler);
+				}
+			}
+
+			if ($queueChanged) {
+				foreach ($oldQueue->getPending() as $item) {
+					$this->outputQueue->writeln($item[0], $item[1]);
+				}
+				$oldQueue->clear();
+				$oldQueue = null;
+			}
 		}
 
 		private function doEmit(String $event, array $params = []) {

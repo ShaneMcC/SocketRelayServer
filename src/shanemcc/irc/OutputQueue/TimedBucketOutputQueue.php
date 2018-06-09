@@ -187,36 +187,10 @@
 			$this->timerRate = $newValue;
 			return $this;
 		}
-	}
 
-
-	class PriorityQueue implements \Countable {
-		private $queue = [];
-
-		public function push($item, int $priority) {
-			if (!isset($this->queue[$priority])) { $this->queue[$priority] = []; }
-
-			$this->queue[$priority][] = $item;
-		}
-
-		public function pop() {
-			foreach (array_keys($this->queue) as $priority) {
-				$result = array_shift($this->queue[$priority]);
-
-				if (empty($this->queue[$priority])) { unset($this->queue[$priority]); }
-
-				return $result;
-			}
-
-			return NULL;
-		}
-
-		public function count() {
-			$result = 0;
-			foreach (array_keys($this->queue) as $priority) {
-				$result += count($this->queue[$priority]);
-			}
-
-			return $result;
+		/** {@inheritdoc} */
+		public function getPending(): Array {
+			return $this->queue->getQueueItems();
 		}
 	}
+

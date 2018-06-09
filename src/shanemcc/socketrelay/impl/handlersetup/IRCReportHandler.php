@@ -28,7 +28,8 @@
 			$client->on('socket.closed', $reconnectFunction);
 			$client->on('socket.connectfailed', $reconnectFunction);
 
-			$client->setMessageLoop($loop)->connect($connectionSettings);
+			$queueSettings = @$newConfig['outputqueue'] ?: [];
+			$client->setMessageLoop($loop)->setQueueSettings($queueSettings)->connect($connectionSettings);
 
 			// Set up ReportHandler.
 			return new IRCReportHandlerImpl($loop, $client);
@@ -60,5 +61,8 @@
 
 			$connectionSettings = $this->buildConnectionSettings($newConfig);
 			$client->setConnectionSettings($connectionSettings);
+
+			$queueSettings = @$newConfig['outputqueue'] ?: [];
+			$client->setQueueSettings($queueSettings);
 		}
 	}

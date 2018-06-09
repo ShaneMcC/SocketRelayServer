@@ -34,4 +34,11 @@
 		 * Clear the queue.
 		 */
 		public abstract function clear();
+
+		/**
+		 * Get pending messages.
+		 *
+		 * @return Array of pending messages, [$line, $priority] per message;
+		 */
+		public abstract function getPending(): Array;
 	}

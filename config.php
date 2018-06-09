@@ -22,6 +22,10 @@
 	$config['reporter']['irc']['host'] = getEnvOrDefault('REPORTER_IRC_HOST', '127.0.0.1');
 	$config['reporter']['irc']['port'] = getEnvOrDefault('REPORTER_IRC_PORT', '6667');
 	$config['reporter']['irc']['password'] = getEnvOrDefault('REPORTER_IRC_PASSWORD', '');
+	$config['reporter']['irc']['outputqueue']['enabled'] = true;
+	$config['reporter']['irc']['outputqueue']['capacityMax'] = 5;
+	$config['reporter']['irc']['outputqueue']['refilRate'] = 0.7;
+	$config['reporter']['irc']['outputqueue']['timerRate'] = 1;
 
 	$config['deprecatedKeys'] = [];
 
