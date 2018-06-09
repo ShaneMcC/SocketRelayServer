@@ -40,7 +40,7 @@
 		$server->setValidKeys($config['validKeys']);
 		$server->setDeprecatedKeys($config['deprecatedKeys']);
 
-		$reloadServer = true;
+		$reloadServer = false;
 		if ($config['listen']['host'] != $oldConfig['listen']['host']) { $reloadServer = true; }
 		if ($config['listen']['port'] != $oldConfig['listen']['port']) { $reloadServer = true; }
 		if ($config['listen']['timeout'] != $oldConfig['listen']['timeout']) { $reloadServer = true; }
