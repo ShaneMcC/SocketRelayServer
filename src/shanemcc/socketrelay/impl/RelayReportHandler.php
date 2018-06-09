@@ -31,6 +31,14 @@
 			if (!empty($suffix)) { $this->suffix = $suffix; }
 		}
 
+		public function getClient(): SocketRelayClient {
+			return $this->client;
+		}
+
+		public function setClient(SocketRelayClient $client) {
+			$this->client = $client;
+		}
+
 		/** {@inheritdoc} */
 		public function retry() {
 			$this->client->addMessage([$this, 'sendMessagesToSocket'])->send();

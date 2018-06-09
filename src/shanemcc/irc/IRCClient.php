@@ -86,17 +86,67 @@
 			return $this->messageLoop;
 		}
 
+		public function getConnectionSettings(): IRCConnectionSettings {
+			return $this->connectionSettings;
+		}
+
+		public function setConnectionSettings(?IRCConnectionSettings $connectionSettings) {
+			$oldSettings = $this->connectionSettings;
+			$this->connectionSettings = $connectionSettings;
+
+			if ($this->outputQueue === null) { return; }
+
+			// Update nickname.
+			$nick = $this->connectionSettings->getNickname();
+			$this->writeln(sprintf('NICK %s', $nick));
+
+			// Reconnect if server changed.
+			$reconnectRequired = false;
+
+			if ($connectionSettings->getHost() != $oldSettings->getHost()) { $reconnectRequired = true; }
+			if ($connectionSettings->getPort() != $oldSettings->getPort()) { $reconnectRequired = true; }
+			if ($connectionSettings->getPassword() != $oldSettings->getPassword()) { $reconnectRequired = true; }
+			if ($connectionSettings->getUsername() != $oldSettings->getUsername()) { $reconnectRequired = true; }
+			if ($connectionSettings->getRealname() != $oldSettings->getRealname()) { $reconnectRequired = true; }
+
+			if ($reconnectRequired) {
+				$this->writeln(sprintf('QUIT :Server details changed, reconnecting.'));
+			} else {
+				$old = explode(',', $oldSettings->getAutoJoin());
+				$new = explode(',', $connectionSettings->getAutoJoin());
+
+				$removed = array_diff($old, $new);
+				$added = array_diff($new, $old);
+
+				if (!empty($removed)) {
+					$this->leaveChannel(implode(',', $removed), 'Channel removed from config.');
+				}
+
+				if (!empty($added)) {
+					$this->joinChannel(implode(',', $added));
+				}
+			}
+		}
+
 		/**
 		 * Connect to IRC.
 		 *
 		 * @param Callable $error Callback if there is an error connecting.
 		 */
-		public function connect(IRCConnectionSettings $connectionSettings) {
+		public function connect(IRCConnectionSettings $connectionSettings = null) {
 			if ($this->socket !== null) { throw new Exception('Already connected.'); }
 
 			$this->reset();
 			$this->connectTime = time();
-			$this->connectionSettings = $connectionSettings;
+			if ($connectionSettings != null) {
+				$this->connectionSettings = $connectionSettings;
+			} else {
+				$connectionSettings = $this->connectionSettings;
+			}
+			if (!($this->connectionSettings instanceof IRCConnectionSettings)) {
+				throw new Exception('No known ConnectionSettings');
+			}
+
 			$this->myNickname = $connectionSettings->getNickname();
 
 			$startLoop = false;
@@ -222,7 +272,7 @@
 				$this->writeln(sprintf('PASS %s', $pass));
 			}
 			$this->writeln(sprintf('NICK %s', $nick));
-			$this->writeln(sprintf('USER %s %s %s :%s', $nick, $localhost, $remotehost, $real));
+			$this->writeln(sprintf('USER %s %s %s :%s', $user, $localhost, $remotehost, $real));
 
 			$this->doEmit('socket.connected');
 		}
@@ -334,6 +384,11 @@
 			$this->myNickname = $bits[2];
 
 			$this->doEmit('server.ready');
+
+			$channels = $this->getConnectionSettings()->getAutoJoin();
+			$this->getMessageLoop()->schedule(5, false, function() use ($channels) {
+				$this->joinChannel($channels);
+			});
 		}
 
 		public function isReady(): bool {

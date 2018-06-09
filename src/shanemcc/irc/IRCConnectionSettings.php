@@ -11,6 +11,8 @@
 		private $port = 6667;
 		private $password = '';
 
+		private $autojoin = '';
+
 		public function getNickname(): String {
 			return $this->nickname;
 		}
@@ -77,6 +79,16 @@
 
 		public function setPassword(String $password) {
 			$this->password = $password;
+
+			return $this;
+		}
+
+		public function getAutoJoin(): String {
+			return $this->autojoin;
+		}
+
+		public function setAutoJoin(String $autojoin) {
+			$this->autojoin = $autojoin;
 
 			return $this;
 		}

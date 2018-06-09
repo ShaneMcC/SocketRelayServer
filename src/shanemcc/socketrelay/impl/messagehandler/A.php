@@ -28,6 +28,10 @@
 					$reportHandler->handle($handler, 'A', $number, $key, implode(' ', $messageBits));
 					return true;
 				}
+			} else if ($messageBits[0] == 'REHASH') {
+				reloadConfig();
+
+				return true;
 			} else if ($messageBits[0] == 'KILL') {
 				$reason = isset($messageBits[1]) ? $messageBits[1] : 'Server closing.';
 				$socket = $handler->getServer()->getSocket();

@@ -36,6 +36,10 @@
 			}
 		}
 
+		public function getClient(): IRCClient {
+			return $this->client;
+		}
+
 		private function sendMessage($message) {
 			$bits = explode(' ', $message, 3);
 			$type = strtoupper($message[0]);
