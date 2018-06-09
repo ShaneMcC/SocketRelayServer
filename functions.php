@@ -17,6 +17,8 @@
 	function reloadConfig() {
 		global $loop, $config, $reportHandler, $reportHandlerSetup, $server;
 
+		echo 'Reloading config...', "\n";
+
 		$oldConfig = $config;
 		require(dirname(__FILE__) . '/config.php');
 

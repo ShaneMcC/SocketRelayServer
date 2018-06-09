@@ -5,6 +5,7 @@ After=network.target
 [Service]
 WorkingDirectory=/etc/socketrelayserver
 ExecStart=/etc/socketrelayserver/run.php
+ExecReload=/bin/kill -HUP $MAINPID
 Restart=always
 User=nobody
 
