@@ -73,5 +73,9 @@
 	// Set up our main listen socket.
 	$server = setupServer($loop, $config, $reportHandler);
 
+	// Script to run once after everything is setup before we run the loop.
+	$runonce = getEnvOrDefault('RUNONCE', __DIR__ . '/runonce.php');
+	if (file_exists($runonce)) { include($runonce); }
+
 	// Run the loop.
 	$loop->run();

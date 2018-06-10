@@ -1,5 +1,6 @@
 vendor
 config.local.php
 .failedMessages
+runonce.php
 test.php
 /nbproject/private/
