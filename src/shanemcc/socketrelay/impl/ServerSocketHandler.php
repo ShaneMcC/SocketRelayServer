@@ -17,6 +17,9 @@
 		/** @var array Array of handlers for message types. */
 		private static $handlers = [];
 
+		/** @var int Counter of invalid commands. */
+		private $invalidCommands = 0;
+
 		/**
 		 * Create a new ServerSocketHandler.
 		 *
@@ -90,8 +93,10 @@
 		public function runMessageHandler(String $messageType, String $number, String $key, String $messageParams) {
 			if (self::hasMessageHandler($messageType)) {
 				$handler = self::getMessageHandler($messageType);
-				if (!call_user_func($handler['callable'], $this, $number, $key, $messageParams)) {
-                    self::invalidHandler($this, $number, $key, '');
+				if (call_user_func($handler['callable'], $this, $number, $key, $messageParams)) {
+					$this->invalidCommands = 0;
+				} else {
+					self::invalidHandler($this, $number, $key, '');
 				}
 			} else {
 				self::invalidHandler($this, $number, $key, '');
@@ -108,6 +113,19 @@
 		 */
 		public static function invalidHandler(ServerSocketHandler $handler, String $number, String $key, String $messageParams) {
             $handler->sendResponse($number, 'Err', 'Access denied, Invalid Handler or Other Error');
+            $this->incrInvalidCommands();
+		}
+
+		/**
+		 * Increment the invalid commands counter and close the socket if it
+		 * gets too high.
+		 */
+		private function incrInvalidCommands() {
+			$this->invalidCommands++;
+			if ($this->invalidCommands >= 3) {
+				$this->sendResponse('--', 'Err', 'Too many invalid commands.');
+				$this->closeConnection();
+			}
 		}
 
 		/**
@@ -147,6 +165,7 @@
 					$this->closeConnection();
 				} else {
 					$this->sendResponse($number, 'Err', 'Protocol Error');
+					$this->incrInvalidCommands();
 				}
 			} else {
 				$key = $parts[1];
