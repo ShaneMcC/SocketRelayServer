@@ -4,6 +4,7 @@
 	use shanemcc\socketrelay\iface\ReportHandlerSetup;
 	use shanemcc\socketrelay\iface\ReportHandler;
 	use shanemcc\socket\iface\MessageLoop;
+	use shanemcc\socket\impl\ReactSocket\MessageLoop as ReactMessageLoop;
 	use shanemcc\discord\DiscordClient;
 	use shanemcc\socketrelay\impl\DiscordHandler as DiscordHandlerImpl;
 
@@ -12,6 +13,8 @@
 	class DiscordHandler implements ReportHandlerSetup {
 		/** {@inheritdoc} */
 		public function setup(MessageLoop $loop, Array $clientConf): ReportHandler {
+			if (!($loop instanceof ReactMessageLoop)) { die('Discord requires ReactPHP MessageLoop.' . "\n"); }
+
 			$client = new DiscordClient($clientConf['clientid'], $clientConf['clientSecret'], $clientConf['token']);
 
 			echo 'Discord invite link: https://discordapp.com/oauth2/authorize?client_id=' . $clientConf['clientid'] . '&scope=bot&permissions=536931328', "\n";
