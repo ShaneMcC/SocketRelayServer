@@ -38,7 +38,7 @@
 		private $hasTimer = false;
 
 		/** @var bool Do we want to enable debug messages? */
-		private $enableDebugging = true;
+		private $enableDebugging = false;
 
 		/**
 		 * Create a new OutputQueue
