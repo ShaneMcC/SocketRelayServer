@@ -26,6 +26,7 @@
             $userout = '-- ' . $key . ' ' . $command . ' ' . $args . "\n";
             fwrite($fp, $userout);
 
+            $response = '';
             while (!feof($fp)) { $response .= fread($fp, 8192); }
             $result = ['request' => $userout, 'response' => [], 'error' => []];
 

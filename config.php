@@ -27,6 +27,14 @@
 	$config['reporter']['irc']['outputqueue']['refilRate'] = 0.7;
 	$config['reporter']['irc']['outputqueue']['timerRate'] = 1;
 
+
+	// $config['reporthandler'] = getEnvOrDefault('REPORTER_HANDLER', 'discord');
+	$config['reporter']['discord']['clientid'] = getEnvOrDefault('REPORTER_DISCORD_ID', '123456789012345678');
+	$config['reporter']['discord']['clientSecret'] = getEnvOrDefault('REPORTER_DISCORD_SECRET', 'abcdefghijklmnopqrstuvwxyz012345');
+	$config['reporter']['discord']['token'] = getEnvOrDefault('REPORTER_DISCORD_TOKEN', '123456');
+	$config['reporter']['discord']['debug'] = strtolower(getEnvOrDefault('REPORTER_DISCORD_DEBUG', 'false')) == "true";
+
+
 	$config['deprecatedKeys'] = [];
 
 	$config['validKeys'] = [];

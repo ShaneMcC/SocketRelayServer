@@ -12,6 +12,23 @@
 	use shanemcc\socket\impl\ReactSocket\MessageLoop as React_MessageLoop;
 	$loop = new React_MessageLoop();
 
+	if (php_sapi_name() == 'cli') {
+		register_shutdown_function(function() {
+			$error = error_get_last();
+
+			if ($error !== null) {
+				echo '========================================', "\n";
+				echo 'Last Known Error: ', "\n";
+				echo '====================', "\n";
+				echo 'Type: ', $error['type'], "\n";
+				echo 'File: ', $error['file'], "\n";
+				echo 'Line: ', $error['line'], "\n";
+				echo 'Message: ', $error['message'], "\n";
+				echo '========================================', "\n";
+			}
+		});
+	}
+
 	require(dirname(__FILE__) . '/config.php');
 
 	function reloadConfig() {
@@ -52,7 +69,6 @@
 			$server = setupServer($loop, $config, $reportHandler);
 		}
 	}
-
 
 	function setupServer(MessageLoop $loop, Array $config, ?ReportHandler $reportHandler = null): SocketRelayServer {
 		$server = new SocketRelayServer($loop, $config['listen']['host'], (int)$config['listen']['port'], (int)$config['listen']['timeout']);

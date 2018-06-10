@@ -6,6 +6,7 @@
 	use shanemcc\socketrelay\impl\RetryReportHandler;
 	use shanemcc\socketrelay\impl\handlersetup\SocketRelay as SocketRelaySetup;
 	use shanemcc\socketrelay\impl\handlersetup\IRCReportHandler as IRCReportHandlerSetup;
+	use shanemcc\socketrelay\impl\handlersetup\DiscordHandler as DiscordHandlerSetup;
 
 	// Set up our relay client.
 	$client = null;
@@ -14,12 +15,16 @@
 	$setupObjects = [];
 	$setupObjects['socketrelay'] = new SocketRelaySetup();
 	$setupObjects['irc'] = new IRCReportHandlerSetup();
+	$setupObjects['discord'] = new DiscordHandlerSetup();
 
 	$clientConf = isset($config['reporter'][$config['reporthandler']]) ? $config['reporter'][$config['reporthandler']] : null;
 
 	if ($clientConf != null && isset($setupObjects[$config['reporthandler']])) {
 		$reportHandlerSetup = $setupObjects[$config['reporthandler']];
 		$reportHandler = $reportHandlerSetup->setup($loop, $clientConf);
+	} else {
+		echo 'No valid handler specified.', "\n";
+		die();
 	}
 
 	// Load in any previously-failed messages into the report handler.
