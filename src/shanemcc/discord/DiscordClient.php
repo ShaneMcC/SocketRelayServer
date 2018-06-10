@@ -2,6 +2,7 @@
 	namespace shanemcc\discord;
 
 	use React\HttpClient\Client as HTTPClient;
+	use React\EventLoop\Factory as EventLoopFactory;
 	use React\EventLoop\LoopInterface;
 
 	use Ratchet\Client\Connector as RatchetConnector;
@@ -210,7 +211,7 @@
 			$startLoop = false;
 			if ($this->loopInterface == null) {
 				$startLoop = true;
-				$this->loopInterface = new LoopInterface();
+				$this->loopInterface = EventLoopFactory::create();
 			}
 
 			$this->httpClient = new HTTPClient($this->loopInterface);
