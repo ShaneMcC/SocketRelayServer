@@ -37,6 +37,9 @@
 		/** @var bool Do we have an active timer currently? */
 		private $hasTimer = false;
 
+		/** @var bool Do we want to enable debug messages? */
+		private $enableDebugging = true;
+
 		/**
 		 * Create a new OutputQueue
 		 *
@@ -46,7 +49,7 @@
 		public function __construct(MessageLoop $messageLoop, BaseSocketHandler $socket) {
 			parent::__construct($messageLoop, $socket);
 			$this->capacity = $this->capacityMax;
-			echo '[', date('r'), '] Set initial bucket capacity to ', $this->capacity, "\n";
+			if ($this->enableDebugging) { echo '[', date('r'), '] Set initial bucket capacity to ', $this->capacity, "\n"; }
 			$this->queue = new PriorityQueue();
 		}
 
@@ -55,7 +58,7 @@
 			if ($priority == QueuePriority::Immediate) {
 				$this->socket->writeln($line);
 				$this->capacity--;
-				echo '[', date('r'), '] Immediate message reduced bucket capacity to ', $this->capacity, "\n";
+				if ($this->enableDebugging) { echo '[', date('r'), '] Immediate message reduced bucket capacity to ', $this->capacity, "\n"; }
 				return;
 			} else {
 				$this->queue->push($line, $priority);
@@ -64,7 +67,7 @@
 			$this->trySendLine();
 
 			if (!$this->hasTimer) {
-				echo '[', date('r'), '] Scheduling timer for bucket capacity refresh.', "\n";
+				if ($this->enableDebugging) { echo '[', date('r'), '] Scheduling timer for bucket capacity refresh.', "\n"; }
 				$this->hasTimer = true;
 				$this->messageLoop->schedule($this->timerRate, false, function() { $this->runTimer(); });
 			}
@@ -83,11 +86,11 @@
 		private function runTimer() {
 			$old = $this->capacity;
 			$this->capacity = min($this->capacityMax, ($this->capacity + $this->refilRate));
-			echo '[', date('r'), '] Updated bucket capacity from ', $old, ' to ', $this->capacity, "\n";
+			if ($this->enableDebugging) { echo '[', date('r'), '] Updated bucket capacity from ', $old, ' to ', $this->capacity, "\n"; }
 			$this->trySendLine();
 
 			if ($this->capacity < $this->capacityMax) {
-				echo '[', date('r'), '] Rescheduling timer for bucket capacity refresh.', "\n";
+				if ($this->enableDebugging) { echo '[', date('r'), '] Rescheduling timer for bucket capacity refresh.', "\n"; }
 				$this->hasTimer = true;
 				$this->messageLoop->schedule($this->timerRate, false, function() { $this->runTimer(); });
 			} else {
@@ -108,12 +111,12 @@
 			if ($this->capacity >= 1 && $this->queue->count() > 0) {
 				$this->socket->writeln($this->queue->pop());
 				$this->capacity--;
-				echo '[', date('r'), '] Queued message reduced bucket capacity to ', $this->capacity, "\n";
+				if ($this->enableDebugging) { echo '[', date('r'), '] Queued message reduced bucket capacity to ', $this->capacity, "\n"; }
 
 				// Keep trying until we can't empty any further.
 				if ($empty) { $this->trySendLine($empty); }
 			} else if ($this->queue->count() > 0) {
-				echo '[', date('r'), '] Insufficient capacity to send line: ', $this->capacity, "\n";
+				if ($this->enableDebugging) { echo '[', date('r'), '] Insufficient capacity to send line: ', $this->capacity, "\n"; }
 			}
 		}
 
