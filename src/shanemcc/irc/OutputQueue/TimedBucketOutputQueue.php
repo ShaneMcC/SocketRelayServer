@@ -59,12 +59,11 @@
 				$this->socket->writeln($line);
 				$this->capacity--;
 				if ($this->enableDebugging) { echo '[', date('r'), '] Immediate message reduced bucket capacity to ', $this->capacity, "\n"; }
-				return;
 			} else {
 				$this->queue->push($line, $priority);
-			}
 
-			$this->trySendLine();
+				$this->trySendLine();
+			}
 
 			if (!$this->hasTimer) {
 				if ($this->enableDebugging) { echo '[', date('r'), '] Scheduling timer for bucket capacity refresh.', "\n"; }
@@ -85,7 +84,7 @@
 		 */
 		private function runTimer() {
 			$old = $this->capacity;
-			$this->capacity = min($this->capacityMax, ($this->capacity + $this->refilRate));
+			$this->capacity = max(0, min($this->capacityMax, ($this->capacity + $this->refilRate)));
 			if ($this->enableDebugging) { echo '[', date('r'), '] Updated bucket capacity from ', $old, ' to ', $this->capacity, "\n"; }
 			$this->trySendLine();
 
