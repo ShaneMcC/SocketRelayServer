@@ -18,8 +18,8 @@
 		private $loop;
 
 		/** {@inheritdoc} */
-		public function __construct() {
-			$this->loop = EventLoopFactory::create();
+		public function __construct(?LoopInterface $loop = null) {
+			$this->loop = $loop === null ? EventLoopFactory::create() : $loop;
 		}
 
 		/** {@inheritdoc} */
