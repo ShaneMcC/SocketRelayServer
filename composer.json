@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "react/socket": "^0.8.4",
+        "react/socket": "^1.1.0",
         "react/event-loop": "^0.4.3",
         "evenement/evenement": "^3.0",
         "shanemcc/reactphp-discord": "0.3"
