@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "content-hash": "5c5e60b5722cfa74b9ff81f29e929e9b",
@@ -51,32 +51,33 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "1.4.2",
+            "version": "1.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "f5b8a8512e2b58b0071a7280e39f14f72e05d87c"
+                "reference": "9f83dded91781a01c63574e387eaa769be769115"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/f5b8a8512e2b58b0071a7280e39f14f72e05d87c",
-                "reference": "f5b8a8512e2b58b0071a7280e39f14f72e05d87c",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/9f83dded91781a01c63574e387eaa769be769115",
+                "reference": "9f83dded91781a01c63574e387eaa769be769115",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.4.0",
-                "psr/http-message": "~1.0"
+                "psr/http-message": "~1.0",
+                "ralouphie/getallheaders": "^2.0.5"
             },
             "provide": {
                 "psr/http-message-implementation": "1.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.0"
+                "phpunit/phpunit": "~4.8.36 || ^5.7.27 || ^6.5.8"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.4-dev"
+                    "dev-master": "1.5-dev"
                 }
             },
             "autoload": {
@@ -106,13 +107,14 @@
             "keywords": [
                 "http",
                 "message",
+                "psr-7",
                 "request",
                 "response",
                 "stream",
                 "uri",
                 "url"
             ],
-            "time": "2017-03-20T17:10:46+00:00"
+            "time": "2018-12-04T20:46:45+00:00"
         },
         {
             "name": "psr/http-message",
@@ -165,17 +167,57 @@
             "time": "2016-08-06T14:39:51+00:00"
         },
         {
-            "name": "ratchet/pawl",
-            "version": "v0.3.2",
+            "name": "ralouphie/getallheaders",
+            "version": "2.0.5",
             "source": {
                 "type": "git",
-                "url": "https://github.com/ratchetphp/Pawl.git",
-                "reference": "85ca3b4a85254cf2ac4309ef42d427820770ae31"
+                "url": "https://github.com/ralouphie/getallheaders.git",
+                "reference": "5601c8a83fbba7ef674a7369456d12f1e0d0eafa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ratchetphp/Pawl/zipball/85ca3b4a85254cf2ac4309ef42d427820770ae31",
-                "reference": "85ca3b4a85254cf2ac4309ef42d427820770ae31",
+                "url": "https://api.github.com/repos/ralouphie/getallheaders/zipball/5601c8a83fbba7ef674a7369456d12f1e0d0eafa",
+                "reference": "5601c8a83fbba7ef674a7369456d12f1e0d0eafa",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~3.7.0",
+                "satooshi/php-coveralls": ">=1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/getallheaders.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ralph Khattar",
+                    "email": "ralph.khattar@gmail.com"
+                }
+            ],
+            "description": "A polyfill for getallheaders.",
+            "time": "2016-02-11T07:05:27+00:00"
+        },
+        {
+            "name": "ratchet/pawl",
+            "version": "v0.3.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ratchetphp/Pawl.git",
+                "reference": "0aaacb8d3f6bcc02138bb8385130f757ecce5649"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ratchetphp/Pawl/zipball/0aaacb8d3f6bcc02138bb8385130f757ecce5649",
+                "reference": "0aaacb8d3f6bcc02138bb8385130f757ecce5649",
                 "shasum": ""
             },
             "require": {
@@ -211,7 +253,7 @@
                 "websocket",
                 "websocket client"
             ],
-            "time": "2018-05-22T21:45:08+00:00"
+            "time": "2019-01-01T19:05:59+00:00"
         },
         {
             "name": "ratchet/rfc6455",
@@ -581,16 +623,16 @@
         },
         {
             "name": "react/stream",
-            "version": "v1.0.0",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/reactphp/stream.git",
-                "reference": "fdd0140f42805d65bf9687636503db0b326d2244"
+                "reference": "50426855f7a77ddf43b9266c22320df5bf6c6ce6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reactphp/stream/zipball/fdd0140f42805d65bf9687636503db0b326d2244",
-                "reference": "fdd0140f42805d65bf9687636503db0b326d2244",
+                "url": "https://api.github.com/repos/reactphp/stream/zipball/50426855f7a77ddf43b9266c22320df5bf6c6ce6",
+                "reference": "50426855f7a77ddf43b9266c22320df5bf6c6ce6",
                 "shasum": ""
             },
             "require": {
@@ -623,7 +665,7 @@
                 "stream",
                 "writable"
             ],
-            "time": "2018-07-11T14:38:16+00:00"
+            "time": "2019-01-01T16:15:09+00:00"
         },
         {
             "name": "ringcentral/psr7",

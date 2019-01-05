@@ -19,7 +19,7 @@
 
 			echo 'Discord invite link: https://discordapp.com/oauth2/authorize?client_id=' . $clientConf['clientid'] . '&scope=bot&permissions=536931328', "\n";
 
-			$client->setDebug($clientConf['debug']);
+			// $client->setDebug($clientConf['debug']);
 			$client->setLoopInterface($loop->getLoopInterface())->connect();
 
 			// Set up ReportHandler.
