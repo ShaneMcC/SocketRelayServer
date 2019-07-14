@@ -29,7 +29,7 @@
 		private $capacityMax = 5;
 
 		/** @var float Refill rate of the bucket. */
-		private $refilRate = 0.7;
+		private $refilRate = 0.5;
 
 		/** @var float Timer rate */
 		private $timerRate = 1;
