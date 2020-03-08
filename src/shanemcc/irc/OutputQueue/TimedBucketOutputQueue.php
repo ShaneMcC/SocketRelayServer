@@ -116,8 +116,9 @@
 			if ($this->queue->count() < 1) { return; }
 
 			$units = $this->getUnitsForLine($this->queue->peek());
+			$neededCapacity = min($units, $this->capacityMax);
 
-			if ($this->capacity >= $units) {
+			if ($this->capacity >= $neededCapacity) {
 				$this->socket->writeln($this->queue->pop());
 				$this->capacity -= $units;
 				if ($this->enableDebugging) { echo '[', date('r'), ']  TBOQ: Queued message reduced bucket capacity by ', $units, ' to ', $this->capacity, "\n"; }
@@ -125,7 +126,7 @@
 				// Keep trying until we can't empty any further.
 				if ($empty) { $this->trySendLine($empty); }
 			} else {
-				if ($this->enableDebugging) { echo '[', date('r'), ']  TBOQ: Insufficient capacity to send line: ', $this->capacity, ' < ', $units, "\n"; }
+				if ($this->enableDebugging) { echo '[', date('r'), ']  TBOQ: Insufficient capacity to send line: ', $this->capacity, ' < ', $neededCapacity, "\n"; }
 			}
 		}
 
@@ -136,7 +137,7 @@
 		 * @return integer number of units
 		 */
 		private function getUnitsForLine(String $line): int {
-			return min(ceil(strlen($line) / $this->bytesPerUnit), $this->capacityMax);
+			return ceil(strlen($line) / $this->bytesPerUnit);
 		}
 
 
