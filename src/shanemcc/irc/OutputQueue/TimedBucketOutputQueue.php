@@ -240,6 +240,26 @@
 			return $this;
 		}
 
+		/**
+		 * Get current debugging state
+		 *
+		 * @return bool Current debugging state
+		 */
+		public function getEnableDebugging(): bool {
+			return $this->enableDebugging;
+		}
+
+		/**
+		 * Set current debugging state
+		 *
+		 * @param bool $newValue New Value
+		 * @return $this For chaining.
+		 */
+		public function setEnableDebugging(bool $newValue): TimedBucketOutputQueue {
+			$this->enableDebugging = $newValue;
+			return $this;
+		}
+
 		/** {@inheritdoc} */
 		public function getPending(): Array {
 			return $this->queue->getQueueItems();

@@ -26,6 +26,7 @@
 	$config['reporter']['irc']['outputqueue']['capacityMax'] = 5;
 	$config['reporter']['irc']['outputqueue']['refilRate'] = 0.7;
 	$config['reporter']['irc']['outputqueue']['timerRate'] = 1;
+	$config['reporter']['irc']['outputqueue']['enableDebugging'] = false;
 
 
 	// $config['reporthandler'] = getEnvOrDefault('REPORTER_HANDLER', 'discord');

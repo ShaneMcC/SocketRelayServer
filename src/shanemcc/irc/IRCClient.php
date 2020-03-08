@@ -273,6 +273,7 @@
 				$config['refilRate'] = @$config['refilRate'] ?: 0.7;
 				$config['timerRate'] = @$config['timerRate'] ?: 1;
 				$config['bytesPerUnit'] = @$config['bytesPerUnit'] ?: 1;
+				$config['enableDebugging'] = @$config['enableDebugging'] ?: false;
 
 				if ($oldQueue === null || !($oldQueue instanceof TimedBucketOutputQueue)) {
 					$queueChanged = ($oldQueue !== null);
@@ -283,6 +284,7 @@
 				$this->outputQueue->setRefilRate($config['refilRate']);
 				$this->outputQueue->setTimerRate($config['timerRate']);
 				$this->outputQueue->setBytesPerUnit($config['bytesPerUnit']);
+				$this->outputQueue->setEnableDebugging($config['enableDebugging']);
 			} else {
 				if ($oldQueue === null || !($oldQueue instanceof ImmediateOutputQueue)) {
 					$queueChanged = ($oldQueue !== null);
