@@ -12,6 +12,9 @@
 	 *
 	 * The bucket starts at maximum capacity.
 	 *
+	 * By default a line uses up "1" unit of capacity for every 128 bytes (up to
+	 * max capacity.)
+	 *
 	 * We have a timer that fires every timerRate seconds that increases the
 	 * bucket capacity by refilRate, and attempts to send any pending lines.
 	 *
@@ -30,6 +33,9 @@
 
 		/** @var float Refill rate of the bucket. */
 		private $refilRate = 0.5;
+
+		/** @var int How many bytes can be served by 1 unit of capacity */
+		private $bytesPerUnit = 128;
 
 		/** @var float Timer rate */
 		private $timerRate = 1;
@@ -57,7 +63,7 @@
 		public function writeln(String $line, int $priority = QueuePriority::Normal) {
 			if ($priority == QueuePriority::Immediate) {
 				$this->socket->writeln($line);
-				$this->capacity--;
+				$this->capacity -= $this->getUnitsForLine($line);
 				if ($this->enableDebugging) { echo '[', date('r'), '] Immediate message reduced bucket capacity to ', $this->capacity, "\n"; }
 			} else {
 				$this->queue->push($line, $priority);
@@ -107,17 +113,29 @@
 		 * @param bool $empty Should we keep sending until the bucket is empty?
 		 */
 		private function trySendLine($empty = true) {
-			if ($this->capacity >= 1 && $this->queue->count() > 0) {
+			$units = $this->getUnitsForLine($line);
+			if ($this->capacity >= $units && $this->queue->count() > 0) {
 				$this->socket->writeln($this->queue->pop());
-				$this->capacity--;
+				$this->capacity -= $units;
 				if ($this->enableDebugging) { echo '[', date('r'), '] Queued message reduced bucket capacity to ', $this->capacity, "\n"; }
 
 				// Keep trying until we can't empty any further.
 				if ($empty) { $this->trySendLine($empty); }
 			} else if ($this->queue->count() > 0) {
-				if ($this->enableDebugging) { echo '[', date('r'), '] Insufficient capacity to send line: ', $this->capacity, "\n"; }
+				if ($this->enableDebugging) { echo '[', date('r'), '] Insufficient capacity to send line: ', $this->capacity, ' < ', $units, "\n"; }
 			}
 		}
+
+		/**
+		 * Get the number of units required to send the given line.
+		 *
+		 * @param  String $line Line to send
+		 * @return integer number of units
+		 */
+		private function getUnitsForLine(String $line): int {
+			return max(ceil(strlen($line) / $this->bytesPerUnit), $this->capacityMax);
+		}
+
 
 		/**
 		 * Get current capacity
@@ -196,6 +214,26 @@
 		 */
 		public function setTimerRate(float $newValue): TimedBucketOutputQueue {
 			$this->timerRate = $newValue;
+			return $this;
+		}
+
+		/**
+		 * Get current bytes per unit
+		 *
+		 * @return int Current bytes per unit
+		 */
+		public function getBytesPerUnit(): int {
+			return $this->bytesPerUnit;
+		}
+
+		/**
+		 * Set current bytes per unit
+		 *
+		 * @param int $newValue New Value
+		 * @return $this For chaining.
+		 */
+		public function setBytesPerUnit(int $newValue): TimedBucketOutputQueue {
+			$this->bytesPerUnit = $newValue;
 			return $this;
 		}
 
