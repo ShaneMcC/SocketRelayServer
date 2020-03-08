@@ -15,6 +15,7 @@
 		public function setup(MessageLoop $loop, Array $clientConf): ReportHandler {
 			$connectionSettings = $this->buildConnectionSettings($clientConf);
 			$client = new IRCClient();
+			$client->setEnableDebugging($clientConf['enableDebugging']);
 
 			if (isset($clientConf['handler']) && is_callable($clientConf['handler'])) {
 				call_user_func($clientConf['handler'], $loop, $clientConf, $connectionSettings, $client);
@@ -64,5 +65,7 @@
 
 			$queueSettings = @$newConfig['outputqueue'] ?: [];
 			$client->setQueueSettings($queueSettings);
+
+			$client->setEnableDebugging($newConfig['enableDebugging']);
 		}
 	}

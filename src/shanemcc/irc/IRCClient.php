@@ -47,6 +47,8 @@
 
 		private $outputQueue;
 
+		private $enableDebugging = false;
+
 		/**
 		 * Create a new IRCClient.
 		 */
@@ -86,6 +88,15 @@
 		 */
 		public function getMessageLoop(): MessageLoop {
 			return $this->messageLoop;
+		}
+
+		public function getEnableDebugging(): bool {
+			return $this->enableDebugging;
+		}
+
+		public function setEnableDebugging(bool $newValue) {
+			$this->enableDebugging = ($newValue == true);
+			return $this;
 		}
 
 		public function getConnectionSettings(): IRCConnectionSettings {
@@ -344,10 +355,13 @@
 		}
 
 		public function dataOut(String $data) {
+			if ($this->enableDebugging) { echo '[', date('r'), ']   OUT: ', $data, "\n"; }
 			$this->doEmit('data.out', [$data]);
 		}
 
 		public function dataIn(String $data) {
+			if ($this->enableDebugging) { echo '[', date('r'), ']    IN: ', $data, "\n"; }
+
 			$this->doEmit('data.in', [$data]);
 			$bits = $this->tokenizeLine($data);
 			$this->doEmit('data.in.tokens', [$bits]);
@@ -515,4 +529,5 @@
 			$this->outputQueue->clear();
 			$this->writeln(sprintf('QUIT :%s', $reason));
 		}
+
 	}
