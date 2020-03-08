@@ -136,7 +136,7 @@
 		 * @return integer number of units
 		 */
 		private function getUnitsForLine(String $line): int {
-			return min($this->bytesPerUnit / ceil(strlen($line)), $this->capacityMax);
+			return min(ceil($this->bytesPerUnit / strlen($line)), $this->capacityMax);
 		}
 
 
