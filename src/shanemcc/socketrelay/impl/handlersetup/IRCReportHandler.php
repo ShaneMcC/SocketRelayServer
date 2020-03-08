@@ -28,7 +28,7 @@
 			$client->on('socket.closed', $reconnectFunction);
 			$client->on('socket.connectfailed', $reconnectFunction);
 
-			$queueSettings = @$newConfig['outputqueue'] ?: [];
+			$queueSettings = @$clientConf['outputqueue'] ?: [];
 			$client->setMessageLoop($loop)->setQueueSettings($queueSettings)->connect($connectionSettings);
 
 			// Set up ReportHandler.
