@@ -272,6 +272,7 @@
 				$config['capacityMax'] = @$config['capacityMax'] ?: 5;
 				$config['refilRate'] = @$config['refilRate'] ?: 0.7;
 				$config['timerRate'] = @$config['timerRate'] ?: 1;
+				$config['bytesPerUnit'] = @$config['bytesPerUnit'] ?: 1;
 
 				if ($oldQueue === null || !($oldQueue instanceof TimedBucketOutputQueue)) {
 					$queueChanged = ($oldQueue !== null);
@@ -281,6 +282,7 @@
 				$this->outputQueue->setCapacityMax($config['capacityMax']);
 				$this->outputQueue->setRefilRate($config['refilRate']);
 				$this->outputQueue->setTimerRate($config['timerRate']);
+				$this->outputQueue->setBytesPerUnit($config['bytesPerUnit']);
 			} else {
 				if ($oldQueue === null || !($oldQueue instanceof ImmediateOutputQueue)) {
 					$queueChanged = ($oldQueue !== null);
