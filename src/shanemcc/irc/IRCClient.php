@@ -457,12 +457,14 @@
 
 			$channels = $this->getConnectionSettings()->getAutoJoin();
 			$this->getMessageLoop()->schedule(5, false, function() use ($channels) {
-				$this->joinChannel($channels);
+				try {
+					$this->joinChannel($channels);
+				} catch (Exception $e) { }
 			});
 		}
 
 		public function isReady(): bool {
-			return ($this->handler !== null && $this->got001);
+			return ($this->handler !== null && $this->outputQueue !== null && $this->socket !== null && $this->got001);
 		}
 
 		public function post005(array $bits) {
