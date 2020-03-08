@@ -25,8 +25,9 @@
 	$config['reporter']['irc']['enableDebugging'] = false;
 	$config['reporter']['irc']['outputqueue']['enabled'] = true;
 	$config['reporter']['irc']['outputqueue']['capacityMax'] = 5;
-	$config['reporter']['irc']['outputqueue']['refilRate'] = 0.7;
+	$config['reporter']['irc']['outputqueue']['refilRate'] = 0.5;
 	$config['reporter']['irc']['outputqueue']['timerRate'] = 1;
+	$config['reporter']['irc']['outputqueue']['bytesPerUnit'] = 128;
 	$config['reporter']['irc']['outputqueue']['enableDebugging'] = false;
 
 
