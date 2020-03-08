@@ -113,15 +113,18 @@
 		 * @param bool $empty Should we keep sending until the bucket is empty?
 		 */
 		private function trySendLine($empty = true) {
-			$units = $this->getUnitsForLine($line);
-			if ($this->capacity >= $units && $this->queue->count() > 0) {
+			if ($this->queue->count() < 1) { return; }
+
+			$units = $this->getUnitsForLine($this->queue->peek());
+
+			if ($this->capacity >= $units) {
 				$this->socket->writeln($this->queue->pop());
 				$this->capacity -= $units;
 				if ($this->enableDebugging) { echo '[', date('r'), '] Queued message reduced bucket capacity to ', $this->capacity, "\n"; }
 
 				// Keep trying until we can't empty any further.
 				if ($empty) { $this->trySendLine($empty); }
-			} else if ($this->queue->count() > 0) {
+			} else {
 				if ($this->enableDebugging) { echo '[', date('r'), '] Insufficient capacity to send line: ', $this->capacity, ' < ', $units, "\n"; }
 			}
 		}

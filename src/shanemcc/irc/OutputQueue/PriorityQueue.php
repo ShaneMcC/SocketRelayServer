@@ -24,6 +24,14 @@
 			return NULL;
 		}
 
+		public function peek() {
+			foreach (array_keys($this->queue) as $priority) {
+				return $this->queue[$priority][0];
+			}
+
+			return NULL;
+		}
+
 		public function count() {
 			$result = 0;
 			foreach (array_keys($this->queue) as $priority) {
