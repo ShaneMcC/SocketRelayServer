@@ -41,7 +41,7 @@
 		}
 
 		// Set up tasks to save failed file periodically.
-		$saveFailedMessages = function() use ($reportHandler, $failFile, $lastHash) {
+		$saveFailedMessages = function() use ($reportHandler, $failFile, &$lastHash) {
 			$failed = $reportHandler->getQueued();
 			$hash = md5(serialize($failed));
 			if ($hash != $lastHash) {
@@ -57,7 +57,7 @@
 
 		// Allow forcefully saving the file.
 		pcntl_signal(SIGHUP, function () use ($saveFailedMessages) {
-			$saveFailedMessages;
+			$saveFailedMessages();
 			try {
 				reloadConfig();
 			} catch (Exception $e) { }
