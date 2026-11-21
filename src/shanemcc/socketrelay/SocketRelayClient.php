@@ -84,6 +84,15 @@
 		}
 
 		/**
+		 * Get the MessageLoop that we are being run from.
+		 *
+		 * @return MessageLoop our MessageLoop
+		 */
+		public function getMessageLoop(): MessageLoop {
+			return $this->messageLoop;
+		}
+
+		/**
 		 * Get our key.
 		 *
 		 * @return string our key

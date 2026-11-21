@@ -19,6 +19,7 @@
 
 		/** {@inheritdoc} */
 		public function update(ReportHandler $reportHandler, Array $oldConfig, Array $newConfig) {
+			$loop = $reportHandler->getClient()->getMessageLoop();
 			$client = new SocketRelayClient($loop, $newConfig['host'], $newConfig['port'], 5, $newConfig['key']);
 			$reportHandler->setClient($client);
 		}

@@ -40,12 +40,12 @@
 				$client->disconnect();
 
 				$client = new DiscordClient($newConfig['clientid'], $newConfig['clientSecret'], $newConfig['token']);
-				$client->setLoopInterface($oldClient->getMessageLoop()->getLoopInterface())->connect();
+				$client->setLoopInterface($oldClient->getLoopInterface())->connect();
 				$reportHandler->setClient($client);
 
-				echo 'Updated discord invite link: https://discordapp.com/oauth2/authorize?client_id=' . $clientConf['clientid'] . '&scope=bot&permissions=536931328', "\n";
+				echo 'Updated discord invite link: https://discordapp.com/oauth2/authorize?client_id=' . $newConfig['clientid'] . '&scope=bot&permissions=536931328', "\n";
 			}
 
-			$client->setDebug($newConfig['debug']);
+			// $client->setDebug($newConfig['debug']);
 		}
 	}
