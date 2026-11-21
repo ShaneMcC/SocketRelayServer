@@ -10,10 +10,10 @@
         }
     ],
     "require": {
-        "react/socket": "^1.1.0",
-        "react/event-loop": "^0.4.3",
+        "react/socket": "^1.16",
+        "react/event-loop": "^1.5",
         "evenement/evenement": "^3.0",
-        "shanemcc/reactphp-discord": "0.3"
+        "team-reflex/discord-php": "^10.72"
     },
     "autoload": {
         "psr-0": {

@@ -32,8 +32,8 @@
 
 
 	// $config['reporthandler'] = getEnvOrDefault('REPORTER_HANDLER', 'discord');
-	$config['reporter']['discord']['clientid'] = getEnvOrDefault('REPORTER_DISCORD_ID', '123456789012345678');
-	$config['reporter']['discord']['clientSecret'] = getEnvOrDefault('REPORTER_DISCORD_SECRET', 'abcdefghijklmnopqrstuvwxyz012345');
+	// Messages are sent as "CM <channel> <message>" where <channel> is a channel ID or name (eg #general)
+	// or "PM <userid> <message>".
 	$config['reporter']['discord']['token'] = getEnvOrDefault('REPORTER_DISCORD_TOKEN', '123456');
 	$config['reporter']['discord']['debug'] = strtolower(getEnvOrDefault('REPORTER_DISCORD_DEBUG', 'false')) == "true";
 

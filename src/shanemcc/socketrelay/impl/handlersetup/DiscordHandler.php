@@ -5,47 +5,61 @@
 	use shanemcc\socketrelay\iface\ReportHandler;
 	use shanemcc\socket\iface\MessageLoop;
 	use shanemcc\socket\impl\ReactSocket\MessageLoop as ReactMessageLoop;
-	use shanemcc\discord\DiscordClient;
 	use shanemcc\socketrelay\impl\DiscordHandler as DiscordHandlerImpl;
 
-	use \Throwable;
+	use Discord\Discord;
+	use Discord\WebSockets\Intents;
+	use Monolog\Handler\StreamHandler;
+	use Monolog\Level;
+	use Monolog\Logger;
+	use React\EventLoop\LoopInterface;
 
 	class DiscordHandler implements ReportHandlerSetup {
+		/** @var int Permissions to request in the invite link (View Channels + Send Messages). */
+		const PERMISSIONS = 3072;
+
 		/** {@inheritdoc} */
 		public function setup(MessageLoop $loop, Array $clientConf): ReportHandler {
 			if (!($loop instanceof ReactMessageLoop)) { die('Discord requires ReactPHP MessageLoop.' . "\n"); }
 
-			$client = new DiscordClient($clientConf['clientid'], $clientConf['clientSecret'], $clientConf['token']);
-
-			echo 'Discord invite link: https://discordapp.com/oauth2/authorize?client_id=' . $clientConf['clientid'] . '&scope=bot&permissions=536931328', "\n";
-
-			// $client->setDebug($clientConf['debug']);
-			$client->setLoopInterface($loop->getLoopInterface())->connect();
+			$client = $this->createClient($loop->getLoopInterface(), $clientConf);
 
 			// Set up ReportHandler.
 			return new DiscordHandlerImpl($loop, $client);
 		}
 
+		/**
+		 * Create and connect a new Discord client.
+		 *
+		 * @param LoopInterface $loop Loop to run the client on.
+		 * @param Array $clientConf Client config.
+		 * @return Discord New client.
+		 */
+		private function createClient(LoopInterface $loop, Array $clientConf): Discord {
+			$logger = new Logger('discord');
+			$logger->pushHandler(new StreamHandler('php://stdout', $clientConf['debug'] ? Level::Debug : Level::Info));
+
+			$client = new Discord(['token' => $clientConf['token'],
+			                       'loop' => $loop,
+			                       'logger' => $logger,
+			                       'intents' => Intents::GUILDS,
+			                       'disableVoiceClient' => true,
+			                      ]);
+
+			$client->on('application-init', function(Discord $discord) {
+				echo 'Discord invite link: ', $discord->application->getInviteURLAttribute(self::PERMISSIONS), "\n";
+			});
+
+			return $client;
+		}
+
 		/** {@inheritdoc} */
 		public function update(ReportHandler $reportHandler, Array $oldConfig, Array $newConfig) {
-			$changeClient = false;
-			if ($newConfig['clientid'] != $oldConfig['clientid']) { $changeClient = true; }
-			if ($newConfig['clientSecret'] != $oldConfig['clientSecret']) { $changeClient = true; }
-			if ($newConfig['token'] != $oldConfig['token']) { $changeClient = true; }
+			if ($newConfig['token'] == $oldConfig['token'] && $newConfig['debug'] == $oldConfig['debug']) { return; }
 
-			$client = $reportHandler->getClient();
+			$oldClient = $reportHandler->getClient();
+			$oldClient->close(false);
 
-			if ($changeClient) {
-				$oldClient = $client;
-				$client->disconnect();
-
-				$client = new DiscordClient($newConfig['clientid'], $newConfig['clientSecret'], $newConfig['token']);
-				$client->setLoopInterface($oldClient->getLoopInterface())->connect();
-				$reportHandler->setClient($client);
-
-				echo 'Updated discord invite link: https://discordapp.com/oauth2/authorize?client_id=' . $newConfig['clientid'] . '&scope=bot&permissions=536931328', "\n";
-			}
-
-			// $client->setDebug($newConfig['debug']);
+			$reportHandler->setClient($this->createClient($oldClient->getLoop(), $newConfig));
 		}
 	}

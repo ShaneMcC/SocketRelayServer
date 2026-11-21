@@ -4,7 +4,7 @@
 	use shanemcc\socket\iface\MessageLoop as BaseMessageLoop;
 	use shanemcc\socket\iface\Socket as BaseSocket;
 
-	use React\EventLoop\Factory as EventLoopFactory;
+	use React\EventLoop\Loop;
 	use React\EventLoop\LoopInterface;
 
 
@@ -19,7 +19,7 @@
 
 		/** {@inheritdoc} */
 		public function __construct(?LoopInterface $loop = null) {
-			$this->loop = $loop === null ? EventLoopFactory::create() : $loop;
+			$this->loop = $loop === null ? Loop::get() : $loop;
 		}
 
 		/** {@inheritdoc} */
@@ -42,7 +42,7 @@
 			if ($repeat) {
 				$this->loop->addPeriodicTimer($time, $function);
 			} else if ($time == 0) {
-				$this->loop->nextTick($function);
+				$this->loop->futureTick($function);
 			} else {
 				$this->loop->addTimer($time, $function);
 			}
