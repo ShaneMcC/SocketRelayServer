@@ -34,6 +34,7 @@
 		private $internalEmitter;
 
 		private $got001 = false;
+		private $isReady = false;
 		private $post005 = false;
 		private $postMOTD = false;
 		private $serverInformationLines = [];
@@ -148,7 +149,7 @@
 		 *
 		 * @param Callable $error Callback if there is an error connecting.
 		 */
-		public function connect(IRCConnectionSettings $connectionSettings = null) {
+		public function connect(?IRCConnectionSettings $connectionSettings = null) {
 			if ($this->socket !== null) { throw new Exception('Already connected.'); }
 
 			$this->reset();

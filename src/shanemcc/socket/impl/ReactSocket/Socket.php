@@ -85,7 +85,7 @@
 					try { $handler->onData(trim($d)); } catch (Throwable $ex) { $this->onError('data', $ex); }
 				}
 
-				if ($this->handlers->contains($handler)) {
+				if (isset($this->handlers[$handler])) {
 					$data = $this->handlers[$handler];
 					$data['time'] = time();
 					$this->handlers[$handler] = $data;

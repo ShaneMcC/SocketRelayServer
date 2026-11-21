@@ -32,7 +32,7 @@
 			return NULL;
 		}
 
-		public function count() {
+		public function count(): int {
 			$result = 0;
 			foreach (array_keys($this->queue) as $priority) {
 				$result += count($this->queue[$priority]);
