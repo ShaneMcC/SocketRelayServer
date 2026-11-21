@@ -277,7 +277,7 @@
 			$config = $this->queueSettings;
 			if ($config == null) { $config = []; }
 
-			$config['enabled'] = @$config['enabled'] ?: true;
+			$config['enabled'] = $config['enabled'] ?? true;
 
 			if ($config['enabled']) {
 				$config['capacityMax'] = @$config['capacityMax'] ?: 5;
