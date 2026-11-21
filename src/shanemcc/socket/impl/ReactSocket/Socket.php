@@ -119,7 +119,9 @@
 						if ($close) {
 							$killed[] = $handler;
 						} else {
-							$this->handlers[$handler] = time();
+							$data = $this->handlers[$handler];
+							$data['time'] = time();
+							$this->handlers[$handler] = $data;
 						}
 					}
 				}
